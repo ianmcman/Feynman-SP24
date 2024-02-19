@@ -18,6 +18,15 @@ public class Assessment implements Serializable{
     public int length;
     public String assessmentType;
 
+    public Assessment(int assessmentID, String assessmentName, boolean isRandom, int retakes, int length, String assessmentType) {
+        this.assessmentID = assessmentID;
+        this.assessmentName = assessmentName;
+        this.isRandom = isRandom;
+        this.retakes = retakes;
+        this.length = length;
+        this.assessmentType = assessmentType;
+    }
+    
     public int getAssessmentID() {
         return assessmentID;
     }

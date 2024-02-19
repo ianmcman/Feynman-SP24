@@ -19,6 +19,15 @@ public class Classroom implements Serializable {
     private List<Teacher> teachers;
     private List<Assessment> classroomAssessments;
 
+    public Classroom(int classroomID, String classroomName, String classroomDescription, List<Student> students, List<Teacher> teachers, List<Assessment> classroomAssessments) {
+        this.classroomID = classroomID;
+        this.classroomName = classroomName;
+        this.classroomDescription = classroomDescription;
+        this.students = students;
+        this.teachers = teachers;
+        this.classroomAssessments = classroomAssessments;
+    }
+
     public int getClassroomID() {
         return classroomID;
     }
