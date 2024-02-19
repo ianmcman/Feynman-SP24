@@ -60,4 +60,9 @@ public class User implements Serializable {
     public String getFullName() {
         return String.format("%s %s", this.firstName, this.lastName);
     }    
+    
+    public void setFullName(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 }
