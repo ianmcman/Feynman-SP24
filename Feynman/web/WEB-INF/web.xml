@@ -4,9 +4,41 @@
         <servlet-name>Public</servlet-name>
         <servlet-class>controllers.Public</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Student</servlet-name>
+        <servlet-class>controllers.Student</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Teacher</servlet-name>
+        <servlet-class>controllers.Teacher</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Parent</servlet-name>
+        <servlet-class>controllers.Parent</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Admin</servlet-name>
+        <servlet-class>controllers.Admin</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Public</servlet-name>
         <url-pattern>/Public</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Student</servlet-name>
+        <url-pattern>/Student</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Teacher</servlet-name>
+        <url-pattern>/Teacher</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Parent</servlet-name>
+        <url-pattern>/Parent</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Admin</servlet-name>
+        <url-pattern>/Admin</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
