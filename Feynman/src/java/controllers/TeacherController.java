@@ -55,7 +55,6 @@ public class TeacherController extends HttpServlet {
         getServletContext().getRequestDispatcher(url).forward(request, response);
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -92,6 +91,6 @@ public class TeacherController extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
+    }
 
 }

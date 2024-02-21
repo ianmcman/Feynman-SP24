@@ -70,13 +70,13 @@ public class QuestionPool {
         return max;
     }
     
-    public List<String> getQTypes(){
+    public List<Question.questionType> getQTypes(){
         List<Question> questions = this.poolQuestions;
         
-        List<String> questionTypes = new ArrayList<>();
+        List<Question.questionType> questionTypes = new ArrayList<>();
         
         for (Question question : questions){
-            questionTypes.add(String.valueOf(question.getqType()));
+            questionTypes.add(question.getqType());
         }
         
         return questionTypes;

@@ -5,6 +5,8 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -13,6 +15,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <div>TODO write content</div>
+        <nav>
+            <a href="<c:url value='Public' />"> Login</a> |
+            <a href="<c:url value='Public?action=register' />">Register</a> | 
+            <a href="<c:url value='Private' />">Profile</a> | 
+            <a href="<c:url value='Private?action=users' />">All Users</a>
+        </nav>
     </body>
 </html>
