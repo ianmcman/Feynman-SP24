@@ -6,6 +6,7 @@ package controllers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -56,6 +57,27 @@ public class Public extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String url = "/index.jsp";
+        String action = request.getParameter("action");
+        ArrayList<String> errors = new ArrayList();
+        String message = "";
+        
+        if (action == null) {
+            action = "default";
+        }
+        
+        switch (action) {
+            case "default":
+                break;
+            case "login":
+                url="index.jsp";
+                break;
+            case "register":
+                url = "/registration.jsp";
+                break;
+        }
+        
+        request.setAttribute("message", message);
+        request.setAttribute("errors", errors);
         
         getServletContext().getRequestDispatcher(url).forward(request, response);
     }
