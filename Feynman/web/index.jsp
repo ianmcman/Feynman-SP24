@@ -17,7 +17,7 @@
         <div align="center">
             <h1>Test Login Form</h1>
             <form action="<c:url value='Public?action=login' />" method="post">
-                <table style="width: 100%">
+                <table>
                     <tr>
                         <td>Username</td>
                         <td><input type="text" name="username" /></td>
@@ -26,7 +26,6 @@
                         <td>Password</td>
                         <td><input type="password" name="password" /></td>
                     </tr>
-
                 </table>
                 <input type="submit" value="Submit" />
             </form>
