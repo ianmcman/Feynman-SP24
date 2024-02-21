@@ -1,0 +1,46 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package business;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
+
+/**
+ *
+ * @author ms461431
+ */
+public class Student extends User implements Serializable {
+    private List<Assessment> assessments;
+    private List<Attempt> assessmentGrades;
+    
+    
+    public Student (List<Assessment> tests, List<Attempt> grades, String username, String password, Integer roleID, String firstName, String lastName){
+        super(username, password, roleID, firstName, lastName);
+        this.assessments = tests;
+        this.assessmentGrades = grades;
+    }
+    public List<Assessment> getAssessments() {
+        return assessments;
+    }
+    public void setAssessments(List<Assessment> tests){
+        this.assessments = tests;
+    }
+    public List<Attempt> getAssessmentGrades(int aID){
+        List<Attempt> grades = List<Attempt> new();
+        // Loop through the Attempts and add the ones that match the aID
+        //  to the grades list
+        return grades;
+    }
+    public List<Attempt> getGrades(){
+        return assessmentGrades;
+    }
+    public void setGrades(List<Attempt> grades){
+        this.assessmentGrades = grades;
+    }
+    public void addGrade(List<Attempt> grade){
+        this.assessmentGrades.add(grade);
+    }
+}
