@@ -30,13 +30,13 @@ public class TeacherController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
-        if (loggedInUser == null) {
-            response.sendRedirect("Public");
-            return;
-        }
+//        User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
+//        if (loggedInUser == null) {
+//            response.sendRedirect("Public");
+//            return;
+//        }
         
-        String url = "/profile.jsp";
+        String url = "/Teacher/index.jsp";
         String action = request.getParameter("action");
         ArrayList<String> errors = new ArrayList();
         String message = "";
@@ -46,6 +46,11 @@ public class TeacherController extends HttpServlet {
         }
 
         switch (action) {
+            case "qPHome":
+                url = "/Teacher/qPoolIndex.jsp";
+                break;
+            default: 
+                break;
         }
         
         
