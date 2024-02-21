@@ -6,15 +6,15 @@
     </servlet>
     <servlet>
         <servlet-name>Student</servlet-name>
-        <servlet-class>controllers.Student</servlet-class>
+        <servlet-class>controllers.StudentController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>Teacher</servlet-name>
-        <servlet-class>controllers.Teacher</servlet-class>
+        <servlet-class>controllers.TeacherController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>Parent</servlet-name>
-        <servlet-class>controllers.Parent</servlet-class>
+        <servlet-class>controllers.ParentController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>Admin</servlet-name>

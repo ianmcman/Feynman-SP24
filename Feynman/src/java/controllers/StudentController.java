@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author im757299
  */
-public class Parent extends HttpServlet {
+public class StudentController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,10 +34,10 @@ public class Parent extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet Parent</title>");            
+            out.println("<title>Servlet Student</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet Parent at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet Student at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
