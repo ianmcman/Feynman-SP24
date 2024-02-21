@@ -5,6 +5,7 @@
 package business;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,9 +30,12 @@ public class Student extends User implements Serializable {
         this.assessments = tests;
     }
     public List<Attempt> getAssessmentGrades(int aID){
-        List<Attempt> grades = List<Attempt> new();
-        // Loop through the Attempts and add the ones that match the aID
-        //  to the grades list
+        List<Attempt> grades = new ArrayList();
+        for (Attempt a : this.assessmentGrades) {
+            if (a.getAttemptID() == aID){
+                grades.add(a);
+            }
+        }
         return grades;
     }
     public List<Attempt> getGrades(){
@@ -40,7 +44,7 @@ public class Student extends User implements Serializable {
     public void setGrades(List<Attempt> grades){
         this.assessmentGrades = grades;
     }
-    public void addGrade(List<Attempt> grade){
+    public void addGrade(Attempt grade){
         this.assessmentGrades.add(grade);
     }
 }

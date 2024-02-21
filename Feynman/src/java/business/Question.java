@@ -25,6 +25,14 @@ public class Question {
     private questionType qType;
     
     private int difficulty;
+
+    public Question(int questionID, String formula, String answer, questionType qType, int difficulty) {
+        this.questionID = questionID;
+        this.formula = formula;
+        this.answer = answer;
+        this.qType = qType;
+        this.difficulty = difficulty;
+    }
     
     public String getQuestionText(){
         return this.formula;
