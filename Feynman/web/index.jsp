@@ -21,5 +21,6 @@
             <a href="<c:url value='Private' />">Profile</a> | 
             <a href="<c:url value='Private?action=users' />">All Users</a>
         </nav>
+        <a href="<c:url value='Teacher' />">Teachers</a>
     </body>
 </html>
