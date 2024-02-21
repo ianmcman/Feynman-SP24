@@ -15,14 +15,24 @@ public class Question {
     
     private String answer;
     
-    private enum questionType{
+    public enum questionType{
         ADDITION,
         SUBTRACTION,
         DIVISION,
         MULTIPLICATION
     }
     
+    private questionType qType;
+    
     private int difficulty;
+
+    public Question(int questionID, String formula, String answer, questionType qType, int difficulty) {
+        this.questionID = questionID;
+        this.formula = formula;
+        this.answer = answer;
+        this.qType = qType;
+        this.difficulty = difficulty;
+    }
     
     public String getQuestionText(){
         return this.formula;
@@ -57,12 +67,12 @@ public class Question {
         this.difficulty = difficulty;
     }
     
-    public String getQType(){
-        
+    public questionType getqType() {
+        return qType;
     }
-    
-    public void setQType(){
-        
+
+    public void setqType(questionType qType) {
+        this.qType = qType;
     }
     
 }
