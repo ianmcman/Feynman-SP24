@@ -1,9 +1,3 @@
-<%-- 
-    Document   : index
-    Created on : Feb 21, 2024, 1:19:40 PM
-    Author     : im757299
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
@@ -16,10 +10,25 @@
     </head>
     <body>
         <nav>
-            <a href="<c:url value='Public' />"> Login</a> |
+            <a href="<c:url value='Public?action=login' />"> Login</a> |
             <a href="<c:url value='Public?action=register' />">Register</a> | 
-            <a href="<c:url value='Private' />">Profile</a> | 
-            <a href="<c:url value='Private?action=users' />">All Users</a>
         </nav>
+        <div align="center">
+            <h1>Test Login Form</h1>
+            <form action="<c:url value='Public?action=login' />" method="post">
+                <table style="width: 100%">
+                    <tr>
+                        <td>Username</td>
+                        <td><input type="text" name="username" /></td>
+                    </tr>
+                    <tr>
+                        <td>Password</td>
+                        <td><input type="password" name="password" /></td>
+                    </tr>
+
+                </table>
+                <input type="submit" value="Submit" />
+            </form>
+        </div>
     </body>
 </html>
