@@ -4,6 +4,7 @@
  */
 package business;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -69,5 +70,15 @@ public class QuestionPool {
         return max;
     }
     
-    //need to add getQTypes()
+    public List<String> getQTypes(){
+        List<Question> questions = this.poolQuestions;
+        
+        List<String> questionTypes = new ArrayList<>();
+        
+        for (Question question : questions){
+            questionTypes.add(String.valueOf(question.getqType()));
+        }
+        
+        return questionTypes;
+    }
 }
