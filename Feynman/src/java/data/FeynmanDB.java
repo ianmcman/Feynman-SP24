@@ -17,4 +17,5 @@ import java.util.logging.Logger;
 public class FeynmanDB {
     private static final Logger LOG = Logger.getLogger(FeynmanDB.class.getName());
     
+    //need to add getUserAttempts() method 
 }
