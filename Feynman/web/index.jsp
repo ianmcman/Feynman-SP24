@@ -12,6 +12,7 @@
         <nav>
             <a href="<c:url value='Public?action=login' />"> Login</a> |
             <a href="<c:url value='Public?action=register' />">Register</a> | 
+            <a href="<c:url value='Teacher' />">Teachers</a>
         </nav>
         <div align="center">
             <h1>Test Login Form</h1>
