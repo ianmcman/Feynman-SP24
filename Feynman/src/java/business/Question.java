@@ -15,7 +15,12 @@ public class Question {
     
     private String answer;
     
-    //private enum<questionType> questionType;
+    private enum questionType{
+        ADDITION,
+        SUBTRACTION,
+        DIVISION,
+        MULTIPLICATION
+    }
     
     private int difficulty;
     
@@ -35,13 +40,14 @@ public class Question {
         this.answer = answer;
     }
     
-//    public boolean checkAnswer(){
-//    
-//    }
     
-//    public boolean compareQuestion(){
-//        
-//    }
+    public boolean checkAnswer(String userAnswer){
+        return this.answer.equalsIgnoreCase(userAnswer);
+    }
+    
+    public boolean compareQuestion(Question question){
+        return question.formula.equalsIgnoreCase(this.formula);  
+    }
     
     public int getDifficulty(){
         return this.difficulty;
@@ -51,6 +57,12 @@ public class Question {
         this.difficulty = difficulty;
     }
     
-    //still need to add getQType() and setQType
+    public String getQType(){
+        
+    }
+    
+    public void setQType(){
+        
+    }
     
 }
