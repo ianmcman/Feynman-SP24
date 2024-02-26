@@ -4,7 +4,9 @@
  */
 package data;
 
+import business.Attempt;
 import business.QuestionPool;
+import business.Student;
 import business.User;
 import java.sql.*;
 import java.time.Year;
@@ -78,6 +80,37 @@ public class FeynmanDB {
                 return null; // need to work on this
             }
         } catch (SQLException e) {
+            System.out.println(e);
+            return null;
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+                pool.freeConnection(connection);
+            } catch (SQLException e) {
+                LOG.log(Level.SEVERE, "*** select all null pointer?", e);
+            }
+        }
+    }
+    
+    public static List<Attempt> getStudentAttempts(int userID){
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        
+        String query = "SELECT * FROM assessmentattempts as aa" + 
+                "JOIN assessmentattemptquestions as aaq ON aa.attemptID=aaq.attemptID" +
+                "WHERE userID = ? GROUP BY aaq.attemptID";
+        
+        try {
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, userID);
+            rs = ps.executeQuery();
+            while(rs.next()){
+                return null; // need to work on this
+            }
+        } catch(SQLException e) {
             System.out.println(e);
             return null;
         } finally {
