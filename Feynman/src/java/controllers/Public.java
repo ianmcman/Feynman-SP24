@@ -42,7 +42,29 @@ public class Public extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+String url = "/index.jsp";
+        String action = request.getParameter("action");
+        ArrayList<String> errors = new ArrayList();
+        String message = "";
+        
+        if (action == null) {
+            action = "default";
+        }
+        
+        switch (action) {
+            case "default":
+                break;
+            case "login":
+                url="/login.jsp";
+                break;
+            case "register":
+                url = "/register.jsp";
+                break;
+        }
+        
+        request.setAttribute("errors", errors);
+      
+        getServletContext().getRequestDispatcher(url).forward(request, response);
     }
 
     /**
@@ -73,19 +95,39 @@ public class Public extends HttpServlet {
                 String password = request.getParameter("password");
                 
                 User user = new User();
-                user = FeynmanDB.authenticateCredentials(username, password);
-                 if (user != null) {
+                
+                try {
+                   user = FeynmanDB.authenticateCredentials(username, password); 
+                } catch (SQLException e) {
+                    
+                }
+                
+                if (user != null) {
                     HttpSession session = request.getSession();
                     session.setAttribute("user", user);
-                    url="index.jsp";
+                    url="/index.jsp";
                 } else {
                     message = "Login Unsuccessful";
                     request.setAttribute("message", message);
-                    url="login.jsp";
+                    url="/login.jsp";
                 }
                 break;
             case "register":
-                url = "/registration.jsp";
+                username = request.getParameter("username");
+                password = request.getParameter("password");
+                String firstName = request.getParameter("firstName");
+                String lastName = request.getParameter("lastName");
+                user = new User(username, password, firstName, lastName);
+                System.out.println(user);
+                
+                try {
+                    System.out.println(FeynmanDB.registerUser(user));
+                } catch (SQLException e) {
+                    errors.add(e + "\nProblem registering user.");
+                    System.out.println(e);
+                }
+                
+                url = "/register.jsp";
                 break;
         }
         
