@@ -244,4 +244,32 @@ public class FeynmanDB {
         }
         return null;
     }
+    
+    public static boolean nameExists(String name) throws Exception {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        
+        String query = "SELECT Username FROM user "
+                + "WHERE name = ?";
+        try {
+            ps = connection.prepareStatement(query);
+            ps.setString(1, name);
+            rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            System.out.println(e);
+            return false;
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+                pool.freeConnection(connection);
+            } catch (Exception e) {
+                LOG.log(Level.SEVERE, "*** name check null pointer", e);
+                throw e;
+            }
+        }
+    }
 }
