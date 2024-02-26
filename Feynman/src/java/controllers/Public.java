@@ -58,7 +58,7 @@ String url = "/index.jsp";
                 url="/login.jsp";
                 break;
             case "register":
-                url = "/registration.jsp";
+                url = "/register.jsp";
                 break;
         }
         
@@ -99,7 +99,7 @@ String url = "/index.jsp";
                 try {
                    user = FeynmanDB.authenticateCredentials(username, password); 
                 } catch (SQLException e) {
-                    errors.add(e + "\nProblem authentication login credentials.");
+                    
                 }
                 
                 if (user != null) {
@@ -113,7 +113,21 @@ String url = "/index.jsp";
                 }
                 break;
             case "register":
-                url = "/registration.jsp";
+                username = request.getParameter("username");
+                password = request.getParameter("password");
+                String firstName = request.getParameter("firstName");
+                String lastName = request.getParameter("lastName");
+                user = new User(username, password, firstName, lastName);
+                System.out.println(user);
+                
+                try {
+                    System.out.println(FeynmanDB.registerUser(user));
+                } catch (SQLException e) {
+                    errors.add(e + "\nProblem registering user.");
+                    System.out.println(e);
+                }
+                
+                url = "/register.jsp";
                 break;
         }
         
