@@ -208,6 +208,106 @@ public class FeynmanDB {
         }
     }
     
+    public static List<Question> getAllQuestions(){
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        List<Question> qs = new ArrayList();
+        
+        String query = "SELECT * FROM question";
+        try {
+            ps = connection.prepareStatement(query);
+            rs = ps.executeQuery();
+            while(rs.next()){
+                int qID = rs.getInt("QID");
+                String qForm = rs.getString("QFormula");
+                String qAnswer = rs.getString("QAnswer");
+                String qDif = rs.getString("QDifficulty");
+                Boolean qMult = rs.getBoolean("QInclMult");
+                Boolean qDiv = rs.getBoolean("QInclDiv");
+                Boolean qAdd = rs.getBoolean("QInclAdd");
+                Boolean qSub = rs.getBoolean("QInclSub");
+                int qDifficulty = Integer.parseInt(qDif);
+                Question.questionType qType=null;
+                if (qDiv) {qType = Question.questionType.DIVISION;}
+                else if(qMult){qType = Question.questionType.MULTIPLICATION;}
+                else if(qSub) {qType = Question.questionType.SUBTRACTION;}
+                else if(qAdd) {qType = Question.questionType.ADDITION;}
+                qs.add(new Question(qID, qForm, qAnswer, qType, qDifficulty));
+            }
+            return qs;
+        } catch (SQLException e) {
+            LOG.log(Level.SEVERE, "*** SQLException: getAllQuestions", e);
+            System.out.println(e);
+            return null;
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+                pool.freeConnection(connection);
+            } catch (SQLException e) {
+                LOG.log(Level.SEVERE, "*** SQLException: cleaning up getAllQuestions", e);
+                System.out.println(e);
+            }
+        }
+    }
+    
+    public static int addQuestion(Question q){
+        List<Question> qs = getAllQuestions();
+        for(Question question : qs){
+            if(question.compareQuestion(q)){
+                return question.getID();
+            }
+        }
+        Boolean qMult = false;
+        Boolean qDiv = false;
+        Boolean qAdd = false;
+        Boolean qSub = false;
+        switch(q.getqType()){
+            case DIVISION:
+                qDiv = true;
+                break;
+            case MULTIPLICATION:
+                qMult = true;
+                break;
+            case ADDITION:
+                qAdd = true;
+                break;
+            case SUBTRACTION:
+                qSub = true;
+                break;
+        }
+        
+        String queryAdd = "INSERT INTO question " +
+                            "(QFormula, QAnswer, QDifficulty, QInclMult, QInclDiv, QInclAdd, QInclSub) " +
+                            "VALUES (?,?,?,?,?,?,?)";
+        String queryID = "SELECT QID FROM question WHERE QFormula= ?";
+        /*
+        try {
+            ps = connection.prepareStatement(queryADD);
+            rs = ps.executeQuery();
+            
+            return qs;
+        } catch (SQLException e) {
+            LOG.log(Level.SEVERE, "*** SQLException: getAllQuestions", e);
+            System.out.println(e);
+            return null;
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+                pool.freeConnection(connection);
+            } catch (SQLException e) {
+                LOG.log(Level.SEVERE, "*** SQLException: cleaning up getAllQuestions", e);
+                System.out.println(e);
+            }
+        }
+        */
+        // FIX THIS PART ME!!!
+        return -1;
+    }
+    
     public static List<Attempt> getStudentAttempts(int userID){
         ConnectionPool pool = ConnectionPool.getInstance();
         Connection connection = pool.getConnection();
