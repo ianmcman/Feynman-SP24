@@ -6,6 +6,7 @@ package data;
 
 import business.Question;
 import business.QuestionPool;
+import business.Student;
 import business.User;
 import java.sql.*;
 import java.time.Year;
@@ -15,20 +16,64 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author mcman
- */
 public class FeynmanDB {
     private static final Logger LOG = Logger.getLogger(FeynmanDB.class.getName());
 
-    public static boolean authenticateCredentials(String username, String password) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    public static User authenticateCredentials(String username, String password) throws SQLException {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        User user = null;
+        
+        String query = "SELECT UserID, FirstName, LastName, RoleName FROM user "
+                     + "JOIN userroles ON user.userid = userroles.userid "
+                     + "JOIN roles ON userroles.roleid = roles.roleid "
+                     + "WHERE username = ? AND password = ?";
+ 
+        PreparedStatement ps = connection.prepareStatement(query);
+        ps.setString(1, username);            
+        ps.setString(2, password);
+        ResultSet rs = ps.executeQuery();
 
-    public static User getUser(String username) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+        if (rs.next()) {
+            user = new User(username, password);
+            ArrayList<String> roles = new ArrayList<>();
+            user.setFullName(rs.getString("FirstName"), 
+                             rs.getString("LastName"));
+            user.setUserID(rs.getInt("userID"));
+            roles.add(rs.getString("RoleName"));
+            while(rs.next()){
+                roles.add(rs.getString("RoleName"));
+            }
+            user.setRoles(roles);
+        }
+        
+        connection.close();
+        pool.freeConnection(connection);
+        
+        return user;
+
+    }   
+
+    public static int registerUser(User user) throws SQLException {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+
+        String query
+                = "INSERT INTO user (FirstName, LastName, Username, Password) "
+                + "VALUES (?, ?, ?, ?)";
+        
+        PreparedStatement ps = connection.prepareStatement(query);
+        ps.setString(3, user.getFirstName());
+        ps.setString(3, user.getLastName());
+        ps.setString(1, user.getUsername());
+        ps.setString(2, user.getPassword());
+        
+        connection.close();
+        pool.freeConnection(connection);
+
+        return ps.executeUpdate();
+}
+
     
     public static List<QuestionPool> getQuestionPools(int userID){
         ConnectionPool pool = ConnectionPool.getInstance();
@@ -159,6 +204,37 @@ public class FeynmanDB {
             } catch (SQLException e) {
                 LOG.log(Level.SEVERE, "*** SQLException: cleaning up getQuestionPools", e);
                 System.out.println(e);
+            }
+        }
+    }
+    
+    public static List<Attempt> getStudentAttempts(int userID){
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        
+        String query = "SELECT * FROM assessmentattempts as aa" + 
+                "JOIN assessmentattemptquestions as aaq ON aa.attemptID=aaq.attemptID" +
+                "WHERE userID = ? GROUP BY aaq.attemptID";
+        
+        try {
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, userID);
+            rs = ps.executeQuery();
+            while(rs.next()){
+                return null; // need to work on this
+            }
+        } catch(SQLException e) {
+            System.out.println(e);
+            return null;
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+                pool.freeConnection(connection);
+            } catch (SQLException e) {
+                LOG.log(Level.SEVERE, "*** select all null pointer?", e);
             }
         }
     }

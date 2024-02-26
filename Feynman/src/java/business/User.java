@@ -1,20 +1,50 @@
 package business;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class User implements Serializable {
+    Integer userID;
     String username;
     String password;
     Integer roleID;
     String firstName;
     String lastName; 
+    ArrayList<String> roles;
 
-    public User(String username, String password, Integer roleID, String firstName, String lastName) {
+    public User(Integer userID, String username, String password, 
+                Integer roleID, ArrayList<String> roles, String firstName, 
+                String lastName) {
+        this.userID = userID;
         this.username = username;
         this.password = password;
         this.roleID = roleID;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.roles = roles;
+    }
+    
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public User() {
+    }
+
+    public User(String username, String password, String firstName, String lastName) {
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public Integer getUserID() {
+        return userID;
+    }
+
+    public void setUserID(Integer userID) {
+        this.userID = userID;
     }
 
     public String getUsername() {
@@ -41,6 +71,14 @@ public class User implements Serializable {
         this.roleID = roleID;
     }
 
+    public ArrayList<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(ArrayList<String> roles) {
+        this.roles = roles;
+    }
+    
     public String getFirstName() {
         return firstName;
     }
