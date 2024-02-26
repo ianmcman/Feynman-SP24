@@ -75,4 +75,7 @@ public class Question {
         this.qType = qType;
     }
     
+    public int getID(){
+        return questionID;
+    }
 }
