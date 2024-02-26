@@ -98,9 +98,7 @@ public class FeynmanDB {
         ResultSet rs = null;
         Attempt attempt = null;
         
-        String query = "SELECT * FROM assessmentattempts as aa" + 
-                "JOIN assessmentattemptquestions as aaq ON aa.attemptID=aaq.attemptID" +
-                "WHERE userID = ? GROUP BY aaq.attemptID";
+        String query = ""; //need to do query
         
         List<Attempt> studentAttempts = new ArrayList<>();
         
@@ -110,7 +108,7 @@ public class FeynmanDB {
             rs = ps.executeQuery();
             while(rs.next()){
                 //need to get: attemptID, studentID, attemptScore, attemptdate, inccorectQuestions, correctQuestions set to Attempt class; then added to list
-                attempt = new Attempt();
+                attempt.setStudentID(rs.getInt("userID"));
             }
             
         } catch(SQLException e) {
