@@ -20,13 +20,10 @@ import java.util.logging.Logger;
 public class FeynmanDB {
     private static final Logger LOG = Logger.getLogger(FeynmanDB.class.getName());
 
-    public static boolean authenticateCredentials(String username, String password) {
+    public static User authenticateCredentials(String username, String password) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    public static User getUser(String username) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
     
     public static List<QuestionPool> getQuestionPools(int userID){
         ConnectionPool pool = ConnectionPool.getInstance();

@@ -16,10 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-/**
- *
- * @author im757299
- */
 public class Public extends HttpServlet {
 
     /**
@@ -76,23 +72,25 @@ public class Public extends HttpServlet {
                 String username = request.getParameter("username");
                 String password = request.getParameter("password");
                 
-                if (FeynmanDB.authenticateCredentials(username, password)) {
-                    User user = FeynmanDB.getUser(username);
+                User user = new User();
+                user = FeynmanDB.authenticateCredentials(username, password);
+                 if (user != null) {
                     HttpSession session = request.getSession();
                     session.setAttribute("user", user);
+                    url="index.jsp";
                 } else {
                     message = "Login Unsuccessful";
+                    request.setAttribute("message", message);
+                    url="login.jsp";
                 }
-                url="index.jsp";
                 break;
             case "register":
                 url = "/registration.jsp";
                 break;
         }
         
-        request.setAttribute("message", message);
         request.setAttribute("errors", errors);
-        
+      
         getServletContext().getRequestDispatcher(url).forward(request, response);
     }
 
