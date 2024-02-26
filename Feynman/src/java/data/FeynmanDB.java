@@ -58,8 +58,6 @@ public class FeynmanDB {
         return user;
 
         }   
-    }
-
     
     public static List<QuestionPool> getQuestionPools(int userID){
         ConnectionPool pool = ConnectionPool.getInstance();
@@ -98,18 +96,23 @@ public class FeynmanDB {
         Connection connection = pool.getConnection();
         PreparedStatement ps = null;
         ResultSet rs = null;
+        Attempt attempt = null;
         
         String query = "SELECT * FROM assessmentattempts as aa" + 
                 "JOIN assessmentattemptquestions as aaq ON aa.attemptID=aaq.attemptID" +
                 "WHERE userID = ? GROUP BY aaq.attemptID";
+        
+        List<Attempt> studentAttempts = new ArrayList<>();
         
         try {
             ps = connection.prepareStatement(query);
             ps.setInt(1, userID);
             rs = ps.executeQuery();
             while(rs.next()){
-                return null; // need to work on this
+                //need to get: attemptID, studentID, attemptScore, attemptdate, inccorectQuestions, correctQuestions set to Attempt class; then added to list
+                attempt = new Attempt();
             }
+            
         } catch(SQLException e) {
             System.out.println(e);
             return null;
@@ -124,3 +127,9 @@ public class FeynmanDB {
         }
     }
 }
+
+    
+    
+    
+    
+

@@ -4,8 +4,11 @@
  */
 package controllers;
 
+import business.Attempt;
+import data.FeynmanDB;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -55,7 +58,20 @@ public class StudentController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        
+        String url = "index.jsp";
+        String action = "";//need to set this and put it in switch statement 
+        //need to get userID and pass into getStudentAttempts()
+        
+        switch (action){
+            case "studentAttempts":
+                url = "studentResults.jsp";
+                List<Attempt> studentAttempts = FeynmanDB.getStudentAttempts(1);//temp value still need to be modified
+                request.setAttribute("studentAttempts", studentAttempts);
+                
+                break;
+        }
+        getServletContext().getRequestDispatcher(url).forward(request, response);
     }
 
     /**
