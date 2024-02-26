@@ -42,7 +42,29 @@ public class Public extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+String url = "/index.jsp";
+        String action = request.getParameter("action");
+        ArrayList<String> errors = new ArrayList();
+        String message = "";
+        
+        if (action == null) {
+            action = "default";
+        }
+        
+        switch (action) {
+            case "default":
+                break;
+            case "login":
+                url="/login.jsp";
+                break;
+            case "register":
+                url = "/registration.jsp";
+                break;
+        }
+        
+        request.setAttribute("errors", errors);
+      
+        getServletContext().getRequestDispatcher(url).forward(request, response);
     }
 
     /**
@@ -73,15 +95,21 @@ public class Public extends HttpServlet {
                 String password = request.getParameter("password");
                 
                 User user = new User();
-                user = FeynmanDB.authenticateCredentials(username, password);
-                 if (user != null) {
+                
+                try {
+                   user = FeynmanDB.authenticateCredentials(username, password); 
+                } catch (SQLException e) {
+                    errors.add(e + "\nProblem authentication login credentials.");
+                }
+                
+                if (user != null) {
                     HttpSession session = request.getSession();
                     session.setAttribute("user", user);
-                    url="index.jsp";
+                    url="/index.jsp";
                 } else {
                     message = "Login Unsuccessful";
                     request.setAttribute("message", message);
-                    url="login.jsp";
+                    url="/login.jsp";
                 }
                 break;
             case "register":
