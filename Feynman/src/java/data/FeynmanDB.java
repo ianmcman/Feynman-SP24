@@ -213,18 +213,21 @@ public class FeynmanDB {
         Connection connection = pool.getConnection();
         PreparedStatement ps = null;
         ResultSet rs = null;
+        Attempt attempt = null;
         
-        String query = "SELECT * FROM assessmentattempts as aa" + 
-                "JOIN assessmentattemptquestions as aaq ON aa.attemptID=aaq.attemptID" +
-                "WHERE userID = ? GROUP BY aaq.attemptID";
+        String query = ""; //need to do query
+        
+        List<Attempt> studentAttempts = new ArrayList<>();
         
         try {
             ps = connection.prepareStatement(query);
             ps.setInt(1, userID);
             rs = ps.executeQuery();
             while(rs.next()){
-                return null; // need to work on this
+                //need to get: attemptID, studentID, attemptScore, attemptdate, inccorectQuestions, correctQuestions set to Attempt class; then added to list
+                attempt.setStudentID(rs.getInt("userID"));
             }
+            
         } catch(SQLException e) {
             System.out.println(e);
             return null;
@@ -239,4 +242,38 @@ public class FeynmanDB {
         }
         return null;
     }
+    
+    public static boolean nameExists(String name) throws Exception {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        
+        String query = "SELECT Username FROM user "
+                + "WHERE name = ?";
+        try {
+            ps = connection.prepareStatement(query);
+            ps.setString(1, name);
+            rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            System.out.println(e);
+            return false;
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+                pool.freeConnection(connection);
+            } catch (Exception e) {
+                LOG.log(Level.SEVERE, "*** name check null pointer", e);
+                throw e;
+            }
+        }
+    }
 }
+
+    
+    
+    
+    
+
