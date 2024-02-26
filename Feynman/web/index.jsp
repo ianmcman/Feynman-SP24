@@ -14,21 +14,13 @@
             <a href="<c:url value='Public?action=register' />">Register</a> | 
             <a href="<c:url value='Teacher' />">Teachers</a>
         </nav>
-        <div align="center">
-            <h1>Test Login Form</h1>
-            <form action="<c:url value='Public?action=login' />" method="post">
-                <table>
-                    <tr>
-                        <td>Username</td>
-                        <td><input type="text" name="username" /></td>
-                    </tr>
-                    <tr>
-                        <td>Password</td>
-                        <td><input type="password" name="password" /></td>
-                    </tr>
-                </table>
-                <input type="submit" value="Submit" />
-            </form>
+        <div>  
+            <p>UserID: <c:out value='${user.userID}'/></p>
+            <p>Username: <c:out value='${user.username}'/></p>
+            <p>FirstName: <c:out value='${user.firstName}'/></p>
+            <p>LastName: <c:out value='${user.lastName}'/></p>
+            <p>Password: <c:out value='${user.password}'/></p>
+            <p>Roles: <c:out value='${user.roles}'/></p>
         </div>
     </body>
 </html>

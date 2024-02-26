@@ -73,8 +73,14 @@ public class Public extends HttpServlet {
                 String password = request.getParameter("password");
                 
                 User user = new User();
-                user = FeynmanDB.authenticateCredentials(username, password);
-                 if (user != null) {
+                
+                try {
+                   user = FeynmanDB.authenticateCredentials(username, password); 
+                } catch (SQLException e) {
+                    errors.add(e + "\nProblem authentication login credentials.");
+                }
+                
+                if (user != null) {
                     HttpSession session = request.getSession();
                     session.setAttribute("user", user);
                     url="index.jsp";
