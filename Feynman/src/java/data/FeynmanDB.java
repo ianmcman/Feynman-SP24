@@ -4,6 +4,7 @@
  */
 package data;
 
+import business.Attempt;
 import business.Question;
 import business.QuestionPool;
 import business.Student;
@@ -63,15 +64,19 @@ public class FeynmanDB {
                 + "VALUES (?, ?, ?, ?)";
         
         PreparedStatement ps = connection.prepareStatement(query);
-        ps.setString(3, user.getFirstName());
-        ps.setString(3, user.getLastName());
-        ps.setString(1, user.getUsername());
-        ps.setString(2, user.getPassword());
+        ps.setString(1, user.getFirstName());
+        ps.setString(2, user.getLastName());
+        ps.setString(3, user.getUsername());
+        ps.setString(4, user.getPassword());
+        
+        
+
+        int retCode = ps.executeUpdate();
         
         connection.close();
         pool.freeConnection(connection);
-
-        return ps.executeUpdate();
+        
+        return retCode;
 }
 
     
@@ -237,5 +242,6 @@ public class FeynmanDB {
                 LOG.log(Level.SEVERE, "*** select all null pointer?", e);
             }
         }
+        return null;
     }
 }
