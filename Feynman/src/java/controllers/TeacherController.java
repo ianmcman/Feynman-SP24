@@ -4,14 +4,18 @@
  */
 package controllers;
 
+import business.QuestionPool;
 import business.User;
+import data.FeynmanDB;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.SQLException;
 
 /**
  *
@@ -47,7 +51,41 @@ public class TeacherController extends HttpServlet {
 
         switch (action) {
             case "qPHome":
+                // request.setAttribute("loggedInUser", loggedInUser);
                 url = "/Teacher/qPoolIndex.jsp";
+                break;
+            case "createQuizHome":
+                // request.setAttribute("loggedInUser", loggedInUser);
+                url = "/Teacher/createQuiz.jsp";
+                break;
+            case "createQuiz":
+                url = "/Teacher/createQuiz.jsp";
+                // try {
+                    // List<QuestionPool> pools = FeynmanDB.getQuestionPools(loggedInuser.getUsername());
+                    // request.setAttribute("pools", pools);
+               // } catch (SQLException e) {
+                   // errors.add("Error receiving pools from database");
+               // }
+                boolean isValid = true;
+                int retakes;
+                String retakesString = request.getParameter("retakes");
+                if (retakesString == null || retakesString.isEmpty()) {
+                    errors.add("Retakes must not be null or empty.");
+                    isValid = false;
+                } else {
+                    retakes = Integer.parseInt(retakesString);
+                    if (retakes < 0) {
+                        errors.add("Retakes must not be less than 0");
+                        isValid = false;
+                    }
+                }
+                
+                if (isValid) {
+                    message = "Quiz creation successful";
+                } else {
+                    message = "Quiz creation unsuccessful";
+                }
+                
                 break;
             default: 
                 break;
