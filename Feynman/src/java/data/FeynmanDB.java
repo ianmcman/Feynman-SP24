@@ -10,6 +10,7 @@ import business.Student;
 import business.User;
 import java.sql.*;
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -22,13 +23,43 @@ import java.util.logging.Logger;
 public class FeynmanDB {
     private static final Logger LOG = Logger.getLogger(FeynmanDB.class.getName());
 
-    public static boolean authenticateCredentials(String username, String password) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public static User authenticateCredentials(String username, String password) throws SQLException {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        User user = null;
+        
+        String query = "SELECT UserID, FirstName, LastName, RoleName FROM user "
+                     + "JOIN userroles ON user.userid = userroles.userid "
+                     + "JOIN roles ON userroles.roleid = roles.roleid "
+                     + "WHERE username = ? AND password = ?";
+ 
+        ps = connection.prepareStatement(query);
+        ps.setString(1, username);            
+        ps.setString(1, password);
+        rs = ps.executeQuery();
+
+        if (rs.next()) {
+            user = new User(username, password);
+            ArrayList<String> roles = new ArrayList<String>();
+            user.setFullName(rs.getString("FirstName"), 
+                             rs.getString("LastName"));
+            user.setUserID(rs.getInt("userID"));
+            while(rs.next()){
+                roles.add(rs.getString("RoleName"));
+            }
+            user.setRoles(roles);
+        }
+        
+        connection.close();
+        pool.freeConnection(connection);
+        
+        return user;
+
+        }   
     }
 
-    public static User getUser(String username) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
     
     public static List<QuestionPool> getQuestionPools(int userID){
         ConnectionPool pool = ConnectionPool.getInstance();
