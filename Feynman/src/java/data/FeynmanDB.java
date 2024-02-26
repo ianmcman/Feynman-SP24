@@ -22,7 +22,6 @@ public class FeynmanDB {
 
     public static User authenticateCredentials(String username, String password) throws SQLException {
         ConnectionPool pool = ConnectionPool.getInstance();
-        Connection connection = pool.getConnection();
         User user = null;
         
         String query = "SELECT UserID, FirstName, LastName, RoleName FROM user "
@@ -30,26 +29,25 @@ public class FeynmanDB {
                      + "JOIN roles ON userroles.roleid = roles.roleid "
                      + "WHERE username = ? AND password = ?";
  
-        PreparedStatement ps = connection.prepareStatement(query);
-        ps.setString(1, username);            
-        ps.setString(2, password);
-        ResultSet rs = ps.executeQuery();
-
-        if (rs.next()) {
-            user = new User(username, password);
-            ArrayList<String> roles = new ArrayList<>();
-            user.setFullName(rs.getString("FirstName"), 
-                             rs.getString("LastName"));
-            user.setUserID(rs.getInt("userID"));
-            roles.add(rs.getString("RoleName"));
-            while(rs.next()){
+        try (Connection connection = pool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, username);            
+            ps.setString(2, password);
+            ResultSet rs = ps.executeQuery();
+            
+            if (rs.next()) {
+                user = new User(username, password);
+                ArrayList<String> roles = new ArrayList<>();
+                user.setFullName(rs.getString("FirstName"), 
+                                 rs.getString("LastName"));
+                user.setUserID(rs.getInt("userID"));
                 roles.add(rs.getString("RoleName"));
+                while(rs.next()){
+                    roles.add(rs.getString("RoleName"));
+                }
+                user.setRoles(roles);
             }
-            user.setRoles(roles);
         }
-        
-        connection.close();
-        pool.freeConnection(connection);
         
         return user;
 
@@ -57,26 +55,23 @@ public class FeynmanDB {
 
     public static int registerUser(User user) throws SQLException {
         ConnectionPool pool = ConnectionPool.getInstance();
-        Connection connection = pool.getConnection();
 
         String query
                 = "INSERT INTO user (FirstName, LastName, Username, Password) "
                 + "VALUES (?, ?, ?, ?)";
         
-        PreparedStatement ps = connection.prepareStatement(query);
-        ps.setString(1, user.getFirstName());
-        ps.setString(2, user.getLastName());
-        ps.setString(3, user.getUsername());
-        ps.setString(4, user.getPassword());
-        
-        
+        try (Connection connection = pool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, user.getFirstName());
+            ps.setString(2, user.getLastName());
+            ps.setString(3, user.getUsername());
+            ps.setString(4, user.getPassword());
 
-        int retCode = ps.executeUpdate();
+
+
+            return ps.executeUpdate();
         
-        connection.close();
-        pool.freeConnection(connection);
-        
-        return retCode;
+        }
 }
 
     
