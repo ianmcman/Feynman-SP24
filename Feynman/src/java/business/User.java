@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class User implements Serializable {
+    Integer userID;
     String username;
     String password;
     Integer roleID;
@@ -11,7 +12,10 @@ public class User implements Serializable {
     String lastName; 
     ArrayList<String> roles;
 
-    public User(String username, String password, Integer roleID, ArrayList<String> roles, String firstName, String lastName) {
+    public User(Integer userID, String username, String password, 
+                Integer roleID, ArrayList<String> roles, String firstName, 
+                String lastName) {
+        this.userID = userID;
         this.username = username;
         this.password = password;
         this.roleID = roleID;
@@ -26,6 +30,14 @@ public class User implements Serializable {
     }
 
     public User() {
+    }
+
+    public Integer getUserID() {
+        return userID;
+    }
+
+    public void setUserID(Integer userID) {
+        this.userID = userID;
     }
 
     public String getUsername() {
