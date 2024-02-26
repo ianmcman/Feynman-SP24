@@ -4,7 +4,7 @@
  */
 package data;
 
-import business.Attempt;
+import business.Question;
 import business.QuestionPool;
 import business.Student;
 import business.User;
@@ -80,6 +80,8 @@ public class FeynmanDB {
         Connection connection = pool.getConnection();
         PreparedStatement ps = null;
         ResultSet rs = null;
+        List<QuestionPool> qPools = new ArrayList();
+        QuestionPool qPool = null;
         
         String query = "SELECT * FROM pool as p "
                 + "JOIN userpools as up ON p.PoolID=up.PoolID "
@@ -91,9 +93,36 @@ public class FeynmanDB {
             ps.setInt(1, userID);
             rs = ps.executeQuery();
             while(rs.next()){
-                return null; // need to work on this
+                // Initializes the Question Pool, or adds it to the list and resets the Pool
+                String pName = rs.getString("PoolName");
+                if(null == qPool){
+                    qPool.setName(pName);
+                }else if(qPool.getName() != pName){
+                    qPools.add(qPool);
+                    qPool = null;
+                    qPool.setName(pName);
+                }
+                // Loads a Question into the Question Pool
+                int qID = rs.getInt("q.QID");
+                String qForm = rs.getString("QFormula");
+                String qAnswer = rs.getString("QAnswer");
+                String qDif = rs.getString("QDifficulty");
+                Boolean qMult = rs.getBoolean("QInclMult");
+                Boolean qDiv = rs.getBoolean("QInclDiv");
+                Boolean qAdd = rs.getBoolean("QInclAdd");
+                Boolean qSub = rs.getBoolean("QInclSub");
+                int qDifficulty = Integer.parseInt(qDif);
+                Question.questionType qType=null;
+                if (qDiv) {qType = Question.questionType.DIVISION;}
+                else if(qMult){qType = Question.questionType.MULTIPLICATION;}
+                else if(qSub) {qType = Question.questionType.SUBTRACTION;}
+                else if(qAdd) {qType = Question.questionType.ADDITION;}
+                Question q = new Question(qID, qForm, qAnswer, qType, qDifficulty);
+                qPool.addQuestion(q);
             }
+            return qPools;
         } catch (SQLException e) {
+            LOG.log(Level.SEVERE, "*** SQLException: getQuestionPools", e);
             System.out.println(e);
             return null;
         } finally {
@@ -102,7 +131,79 @@ public class FeynmanDB {
                 ps.close();
                 pool.freeConnection(connection);
             } catch (SQLException e) {
-                LOG.log(Level.SEVERE, "*** select all null pointer?", e);
+                LOG.log(Level.SEVERE, "*** SQLException: cleaning up getQuestionPools", e);
+                System.out.println(e);
+            }
+        }
+    }
+    
+    public static void addQuestionPool(QuestionPool qPool, int userID){
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String queryPoolAdd = "INSERT INTO pool " +
+                            "(PoolName) VALUES (?)";
+        String queryGetPoolID = "SELECT PoolID FROM pool " +
+                                "WHERE PoolName = ?";
+        String queryLinkUserPool = "INSERT INTO userpools " +
+                                    "(UserID, PoolID) VALUES (?, ?)";
+        String queryLinkQuestionPool = "INSERT INTO questionpools " +
+                                        "(QID, PoolID) VALUES (?, ?)";
+        int poolID;
+        try{
+            ps = connection.prepareStatement(queryPoolAdd);
+            ps.setString(1, qPool.getName());
+            int update = ps.executeUpdate();
+            if(1 > update){ throw new SQLException();}
+        } catch (SQLException e) {
+            LOG.log(Level.SEVERE, "*** SQLException: addQuestionPool adding Question Pool", e);
+            System.out.println(e);
+            return;
+        } 
+        try{
+            ps = connection.prepareStatement(queryGetPoolID);
+            ps.setString(1, qPool.getName());
+            rs = ps.executeQuery();
+            poolID = rs.getInt("PoolID");
+        }catch (SQLException e) {
+            LOG.log(Level.SEVERE, "*** SQLException: addQuestionPool getting Question Pool ID", e);
+            System.out.println(e);
+            return;
+        } 
+        try{
+            ps = connection.prepareStatement(queryLinkUserPool);
+            ps.setInt(1, userID);
+            ps.setInt(2, poolID);
+            int update = ps.executeUpdate();
+            if(1 > update){ throw new SQLException();}
+        }catch (SQLException e) {
+            LOG.log(Level.SEVERE, "*** SQLException: addQuestionPool Linking User to Question Pool", e);
+            System.out.println(e);
+            return;
+        } 
+        try{
+            List<Question> questions = qPool.getQuestions();
+            ps = connection.prepareStatement(queryLinkQuestionPool);
+            for (Question q : questions){
+                ps.setInt(1, q.getID());
+                ps.setInt(2, poolID);
+                int update = ps.executeUpdate();
+                if(1 > update){ throw new SQLException();}
+            }
+        }catch (SQLException e) {
+            LOG.log(Level.SEVERE, "*** SQLException: addQuestionPool Linking Questions to Question Pool", e);
+            System.out.println(e);
+            return;
+        } 
+        finally {
+            try {
+                rs.close();
+                ps.close();
+                pool.freeConnection(connection);
+            } catch (SQLException e) {
+                LOG.log(Level.SEVERE, "*** SQLException: cleaning up getQuestionPools", e);
+                System.out.println(e);
             }
         }
     }
