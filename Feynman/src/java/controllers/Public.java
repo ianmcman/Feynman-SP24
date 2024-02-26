@@ -121,13 +121,17 @@ String url = "/index.jsp";
                 System.out.println(user);
                 
                 try {
-                    System.out.println(FeynmanDB.registerUser(user));
+                    int rowsAffected = FeynmanDB.registerUser(user);
+                    if (rowsAffected == 1) {
+                        // Add a redirect to login to save the user in the session or get the other user information and then save the user in the session.
+                        url = "/index.jsp";
+                    }
                 } catch (SQLException e) {
                     errors.add(e + "\nProblem registering user.");
-                    System.out.println(e);
+                    url = "/register.jsp";
                 }
                 
-                url = "/register.jsp";
+                
                 break;
         }
         

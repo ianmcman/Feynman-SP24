@@ -31,6 +31,11 @@
                 </table>
                 <input type="submit" value="Submit" />
             </form>
+            <ul>
+            <c:forEach items="${errors}" var="error">
+                <li>${error}</li>
+            </c:forEach>
+        </ul>
         </div>
     </body>
 </html>
