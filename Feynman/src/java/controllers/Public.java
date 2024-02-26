@@ -4,13 +4,17 @@
  */
 package controllers;
 
+import business.User;
+import data.FeynmanDB;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -69,6 +73,16 @@ public class Public extends HttpServlet {
             case "default":
                 break;
             case "login":
+                String username = request.getParameter("username");
+                String password = request.getParameter("password");
+                
+                if (FeynmanDB.authenticateCredentials(username, password)) {
+                    User user = FeynmanDB.getUser(username);
+                    HttpSession session = request.getSession();
+                    session.setAttribute("user", user);
+                } else {
+                    message = "Login Unsuccessful";
+                }
                 url="index.jsp";
                 break;
             case "register":
