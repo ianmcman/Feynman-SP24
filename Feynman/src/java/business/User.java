@@ -1,6 +1,7 @@
 package business;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class User implements Serializable {
     String username;
@@ -8,13 +9,15 @@ public class User implements Serializable {
     Integer roleID;
     String firstName;
     String lastName; 
+    ArrayList<String> roles;
 
-    public User(String username, String password, Integer roleID, String firstName, String lastName) {
+    public User(String username, String password, Integer roleID, ArrayList<String> roles, String firstName, String lastName) {
         this.username = username;
         this.password = password;
         this.roleID = roleID;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.roles = roles;
     }
 
     public User() {
@@ -45,6 +48,14 @@ public class User implements Serializable {
         this.roleID = roleID;
     }
 
+    public ArrayList<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(ArrayList<String> roles) {
+        this.roles = roles;
+    }
+    
     public String getFirstName() {
         return firstName;
     }
