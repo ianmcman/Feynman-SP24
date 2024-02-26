@@ -19,9 +19,13 @@ public class User implements Serializable {
         this.lastName = lastName;
         this.roles = roles;
     }
+    
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 
     public User() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     public String getUsername() {
