@@ -4,19 +4,18 @@
  */
 package controllers;
 
+import business.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- *
- * @author im757299
- */
-public class Admin extends HttpServlet {
+public class Private extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,10 +34,10 @@ public class Admin extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet Admin</title>");            
+            out.println("<title>Servlet Private</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet Admin at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet Private at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -56,23 +55,37 @@ public class Admin extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String action = request.getParameter("action");
-        ArrayList<String> errors = new ArrayList<>();
-        String url = new String();
+        User user = (User) request.getSession().getAttribute("user");
+        if (user == null) {
+            response.sendRedirect("Public");
+            return;
+        }
         
+ 
+        String action = request.getParameter("action");
         if (action == null) {
-            action = "dashboard";
+            action = "default";
         }
         
         switch (action) {
+            case "default":
+                break;
             case "dashboard":
-                url = "/Admin/dashboard.jsp";
+                if (user.getRoles().contains("admin")) {
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("Admin");
+                    dispatcher.forward(request, response);
+                    return;
+                } else if (user.getRoles().contains("teacher")) {
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("Teacher");
+                    dispatcher.forward(request, response);
+                    return;
+                } else if (user.getRoles().contains("student")) {
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("Student");
+                    dispatcher.forward(request, response);
+                    return;
+                }                
                 break;
         }
-        
-        request.setAttribute("errors", errors);
-      
-        getServletContext().getRequestDispatcher(url).forward(request, response);
     }
 
     /**

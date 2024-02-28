@@ -124,7 +124,6 @@ public class Public extends HttpServlet {
             String message = "Registration Unsuccessful";
             request.setAttribute("message", message);
             request.getRequestDispatcher("/register.jsp").forward(request, response);
-            return;
         }
     }
     
@@ -148,7 +147,7 @@ public class Public extends HttpServlet {
         if (user != null) {
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
-            response.sendRedirect(request.getContextPath() + "/index.jsp");
+            response.sendRedirect("Private?action=dashboard");
         } else {
             String message = "Login Unsuccessful";
             request.setAttribute("message", message);

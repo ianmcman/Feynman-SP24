@@ -1,9 +1,3 @@
-<%-- 
-    Document   : index
-    Created on : Feb 21, 2024, 2:09:58 PM
-    Author     : jw536419
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -15,7 +9,6 @@
         <nav>
             <a href="<c:url value='Public?action=login' />"> Login</a> |
             <a href="<c:url value='Public?action=register' />">Register</a> | 
-            <a href="<c:url value='Teacher' />">Teachers</a>
         </nav>
         
         <h1>Admin Home</h1>
