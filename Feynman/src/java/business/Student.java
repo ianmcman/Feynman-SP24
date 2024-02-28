@@ -17,9 +17,10 @@ public class Student extends User implements Serializable {
     private List<Assessment> assessments;
     private List<Attempt> assessmentGrades;
     
+    public Student(){}
     
-    public Student (List<Assessment> tests, List<Attempt> grades, String username, String password, Integer roleID, String firstName, String lastName){
-        super(username, password, roleID, firstName, lastName);
+    public Student (List<Assessment> tests, List<Attempt> grades, int UID, String username, String password, Integer roleID, ArrayList<String> roles, String firstName, String lastName){
+        super(UID, username, password, roleID, roles, firstName, lastName);
         this.assessments = tests;
         this.assessmentGrades = grades;
     }

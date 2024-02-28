@@ -5,6 +5,7 @@
 package business;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,8 +16,10 @@ public class Teacher extends User implements Serializable {
     private List<Assessment> assessments;
     private List<QuestionPool> qPools;
     
-    public Teacher (List<Assessment> tests, List<QuestionPool> pools, String username, String password, Integer roleID, String firstName, String lastName){
-        super(username, password, roleID, firstName, lastName);
+    public Teacher() {}
+    
+    public Teacher (List<Assessment> tests, List<QuestionPool> pools, int UID, String username, String password, Integer roleID, ArrayList<String> roles, String firstName, String lastName){
+        super(UID, username, password, roleID, roles, firstName, lastName);
         this.assessments = tests;
         this.qPools = pools;
     }
