@@ -95,6 +95,13 @@ public class TeacherController extends HttpServlet {
             case "createQPool":
                 //error handling and redirect to be added
                 break;
+            case "addQuestion":
+                // request.setAttribute("loggedInUser", loggedInUser);
+                url = "/Teacher/createQuestion.jsp";
+                break;
+            case "default":
+                // request.setAttribute("loggedInUser", loggedInUser);
+                url = "/Teacher/index.jsp";
             default: 
                 break;
         }

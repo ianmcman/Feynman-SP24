@@ -13,9 +13,18 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
-        <a href="<c:url value='Teacher?action=qPHome' />"> qPool</a>
-        <a href="<c:url value='Teacher?action=createQuizHome' />"> Create Quiz</a>
-        <a href="<c:url value='Teacher?action=addQ&rPage=index' />"> Add Question </a>
+        <nav>
+            <a href="<c:url value='Public?action=login' />"> Login</a> |
+            <a href="<c:url value='Public?action=register' />">Register</a> | 
+            <a href="<c:url value='Teacher' />">Teachers</a> | 
+            <a href="<c:url value='Admin' />">Admin</a> | 
+            <a href="<c:url value='Student' />">Students</a>
+        </nav>
+        
+        <h1>Teacher Home</h1>
+        
+        <a href="<c:url value='Teacher?action=qPHome' />"> qPool</a> | 
+        <a href="<c:url value='Teacher?action=createQuizHome' />"> Create Quiz</a> | 
+        <a href="<c:url value='Teacher?action=addQuestion' />"> Add Question </a>
     </body>
 </html>
