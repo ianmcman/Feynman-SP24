@@ -18,7 +18,7 @@
         <ul>
             <p style="color: red; font-weight: bold">${message}</p>
             <c:forEach items="${errors}" var="error">
-                <li>${error}</li>
+                <li style="color: red;">${error}</li>
             </c:forEach>
         </ul>
         
@@ -29,9 +29,21 @@
             <label for id="poolChoice">Question Pool for this Assessment:</label>
             <select name="poolsList" id="poolChoice">
                 <c:forEach items="${pools}" var="pool">
-                    <option value="${pool.ID}>${pool.name}</option>
+                    <option value="${pool.ID}">${pool.name}</option>
                 </c:forEach>
             </select><br><br>
+            
+            <label for id="aType">Assessment Type:</label>
+            <select name="aType" id="aType">
+                <option value="none" selected disabled hidden>Select an Option</option>
+                <c:forEach items="${aTypes}" var="type">
+                    <option value="${type}"
+                            <c:if test="${aType == type}">selected</c:if>>
+                                ${type}</option>
+                </c:forEach>
+            </select>
+            
+            <br><br>
             <input type="submit" value="Create Quiz">
         </form>
     </body>

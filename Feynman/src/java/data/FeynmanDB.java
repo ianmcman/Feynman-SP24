@@ -54,7 +54,7 @@ public class FeynmanDB {
         return user;
 
     }   
-
+    
     public static int registerUser(User user) throws SQLException {
         ConnectionPool pool = ConnectionPool.getInstance();
 
