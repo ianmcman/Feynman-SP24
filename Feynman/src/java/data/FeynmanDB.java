@@ -74,7 +74,64 @@ public class FeynmanDB {
             return ps.executeUpdate();
         
         }
-}
+    }
+    
+    public static ArrayList<User> getAllUsers() throws SQLException {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        ArrayList<User> users = new ArrayList<>();
+        
+        String query1 = "SELECT * FROM user \n";
+        String query2 = "SELECT * FROM userroles \n" +
+                        "JOIN roles \n" +
+                        "	on userroles.RoleID = roles.RoleID \n" +
+                        "WHERE UserID = ?";
+        
+ 
+        try (Connection connection = pool.getConnection();
+             Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(query1)) {
+            while (rs.next()) {
+                int userID = rs.getInt("UserID");
+                String username = rs.getString("Username");
+                String firstName = rs.getString("FirstName");
+                String lastName = rs.getString("LastName");
+                
+                try (PreparedStatement ps = connection.prepareStatement(query2)) {
+                    ps.setInt(1, userID);
+                    try (ResultSet rolesRs = ps.executeQuery()) {
+                        ArrayList<String> roles = new ArrayList<>();
+                        while (rs.next()) {
+                            roles.add(rolesRs.getString("RoleName"));
+                        }
+                    }
+                }
+                
+                User user = new User(userID, username, roles, firstName, lastName);
+
+                
+                    
+
+            
+                
+            }
+            try ) {
+                if (rs.next()) {
+                    user = new User(username, password);
+                    ArrayList<String> roles = new ArrayList<>();
+                    user.setFullName(, 
+                                     );
+                    user.setUserID(rs.getInt("userID"));
+                    do {
+                        roles.add(rs.getString("RoleName"));
+                    } while(rs.next());
+                    user.setRoles(roles);
+                }
+            }
+        }
+        
+        return user;
+
+    }   
 
     
     public static List<QuestionPool> getQuestionPools(int userID){
