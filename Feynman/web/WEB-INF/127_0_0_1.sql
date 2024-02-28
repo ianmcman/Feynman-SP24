@@ -107,7 +107,7 @@ CREATE TABLE `question` (
   `QID` int(11) NOT NULL,
   `QFormula` text NOT NULL,
   `QAnswer` text NOT NULL,
-  `QDifficulty` text NOT NULL,
+  `QDifficulty` tinyint(4) NOT NULL,
   `QInclMult` tinyint(1) NOT NULL,
   `QInclDiv` tinyint(1) NOT NULL,
   `QInclAdd` tinyint(1) NOT NULL,
