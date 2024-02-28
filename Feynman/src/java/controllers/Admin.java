@@ -6,6 +6,7 @@ package controllers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -55,7 +56,23 @@ public class Admin extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String action = request.getParameter("action");
+        ArrayList<String> errors = new ArrayList<>();
+        String url = new String();
+        
+        if (action == null) {
+            action = "dashboard";
+        }
+        
+        switch (action) {
+            case "dashboard":
+                url = "/Admin/dashboard.jsp";
+                break;
+        }
+        
+        request.setAttribute("errors", errors);
+      
+        getServletContext().getRequestDispatcher(url).forward(request, response);
     }
 
     /**
