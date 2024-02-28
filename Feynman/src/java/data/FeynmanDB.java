@@ -316,10 +316,18 @@ public class FeynmanDB {
         PreparedStatement ps = null;
         ResultSet rs = null;
         Attempt attempt = null;
+        Question question = null;
+
         
-        String query = ""; //need to do query
+        String query = "SELECT userID, attemptID FROM assessmentattempts AS aa" +
+                "JOIN assessmentattemptquestions AS aaq ON aa.attemptID = aaq.attemptID" +
+                "JOIN question as q ON aaq.QID = q.QID" +
+                "WHERE userID = ?"; //need to do query
         
         List<Attempt> studentAttempts = new ArrayList<>();
+        
+        List<Question> correctQuestions = new ArrayList<>();
+        List<Question> incorrectQuestions = new ArrayList<>();
         
         try {
             ps = connection.prepareStatement(query);
@@ -328,7 +336,23 @@ public class FeynmanDB {
             while(rs.next()){
                 //need to get: attemptID, studentID, attemptScore, attemptdate, inccorectQuestions, correctQuestions set to Attempt class; then added to list
                 attempt.setStudentID(rs.getInt("userID"));
+                attempt.setAttemptID(rs.getInt("attemptID"));
+                
+                //question.setQuestionID(rs.getInt("QID"));
+                question.setQuestionText(rs.getString("QFormula"));
+                question.setAnswer(rs.getString("QAnswer"));
+                //question.setqType();
+                question.setDifficulty(rs.getInt("QDifficulty"));
+                if(rs.getBoolean("correctAnswer")){
+                    correctQuestions.add(question);
+                } else {
+                    incorrectQuestions.add(question);
+                }
+                attempt.setCorrectQuestions(correctQuestions);
+                attempt.setIncorrectQuestions(incorrectQuestions);
+                studentAttempts.add(attempt);
             }
+            return studentAttempts;
             
         } catch(SQLException e) {
             System.out.println(e);
@@ -342,7 +366,6 @@ public class FeynmanDB {
                 LOG.log(Level.SEVERE, "*** select all null pointer?", e);
             }
         }
-        return null;
     }
     
     public static boolean nameExists(String name) throws Exception {
