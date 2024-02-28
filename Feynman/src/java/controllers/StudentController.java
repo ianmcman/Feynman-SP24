@@ -56,7 +56,6 @@ public class StudentController extends HttpServlet {
                 url = "studentResults.jsp";
                 List<Attempt> studentAttempts = FeynmanDB.getStudentAttempts(1);//temp value still need to be modified
                 request.setAttribute("studentAttempts", studentAttempts);
-                
                 break;
         }
         getServletContext().getRequestDispatcher(url).forward(request, response);
