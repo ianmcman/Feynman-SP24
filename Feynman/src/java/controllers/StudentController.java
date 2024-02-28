@@ -5,6 +5,8 @@
 package controllers;
 
 import business.Attempt;
+import business.QuestionPool;
+import business.User;
 import data.FeynmanDB;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.SQLException;
 
 /**
  *
@@ -32,22 +35,38 @@ public class StudentController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet Student</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet Student at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+//        User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
+//        if (loggedInUser == null) {
+//            response.sendRedirect("Public");
+//            return;
+//        }
+        
+        String url = "/Student/index.jsp";
+        String action = request.getParameter("action");
+        
+        ArrayList<String> errors = new ArrayList();
+        String message = "";
+
+        if (action == null) {
+            action = "default";
         }
+
+        switch (action) {
+            case "studentResults":
+                url = "/Student/studentResults.jsp";
+                List<Attempt> studentAttempts = FeynmanDB.getStudentAttempts(1);//temp value still need to be modified
+                request.setAttribute("studentAttempts", studentAttempts);
+            default:
+                break;
+        }
+        
+        
+        request.setAttribute("message", message);
+        request.setAttribute("errors", errors);
+
+        getServletContext().getRequestDispatcher(url).forward(request, response);
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -59,20 +78,7 @@ public class StudentController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        String url = "index.jsp";
-        String action = "";//need to set this and put it in switch statement 
-        //need to get userID and pass into getStudentAttempts()
-        
-        switch (action){
-            case "studentAttempts":
-                url = "studentResults.jsp";
-                List<Attempt> studentAttempts = FeynmanDB.getStudentAttempts(1);//temp value still need to be modified
-                request.setAttribute("studentAttempts", studentAttempts);
-                
-                break;
-        }
-        getServletContext().getRequestDispatcher(url).forward(request, response);
+        processRequest(request, response);
     }
 
     /**
@@ -97,6 +103,6 @@ public class StudentController extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
+    }
 
 }

@@ -1,3 +1,9 @@
+<%-- 
+    Document   : studentIndex
+    Created on : Feb 28, 2024, 2:03:32 PM
+    Author     : mh749813
+--%>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -6,11 +12,7 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <nav>
-            <a href="<c:url value='Public?action=login' />"> Login</a> |
-            <a href="<c:url value='Public?action=register' />">Register</a> | 
-        </nav>
-        
-        <h1>Admin Home</h1>
+        <h1>Temp test page</h1>
+        <a href="<c:url value='Student?action=studentResults' />"> Student Attempts</a>
     </body>
 </html>

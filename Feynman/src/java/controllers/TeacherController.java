@@ -8,6 +8,7 @@ import business.Question;
 import business.QuestionPool;
 import business.User;
 import data.FeynmanDB;
+import business.Assessment;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -38,11 +39,16 @@ public class TeacherController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
-//        if (loggedInUser == null) {
-//            response.sendRedirect("Public");
-//            return;
-//        }
+        User user = (User) request.getSession().getAttribute("user");
+        if (user == null) {
+            response.sendRedirect("Public");
+            return;
+        }
+        
+        if (!user.getRoles().contains("teacher")) {
+            response.sendRedirect("Public");
+            return;
+        }
         
         String url = "/Teacher/index.jsp";
         String action = request.getParameter("action");
@@ -58,24 +64,30 @@ public class TeacherController extends HttpServlet {
 
         switch (action) {
             case "qPHome":
-                // request.setAttribute("loggedInUser", loggedInUser);
+                
                 url = "/Teacher/qPoolIndex.jsp";
+                //List<QuestionPool> qPools = FeynmanDB.getQuestionPools(loggedInUser.getUserID());
+                //request.setAttribute("pools",qPools);
                 break;
             case "createQuizHome":
-                // request.setAttribute("loggedInUser", loggedInUser);
                 url = "/Teacher/createQuiz.jsp";
                 break;
             case "createQuiz":
                 url = "/Teacher/createQuiz.jsp";
-                // try {
-                    // List<QuestionPool> pools = FeynmanDB.getQuestionPools(loggedInuser.getUsername());
-                    // request.setAttribute("pools", pools);
-               // } catch (SQLException e) {
-                   // errors.add("Error receiving pools from database");
-               // }
+                try {
+                    List<QuestionPool> pools = FeynmanDB.getQuestionPools(loggedInuser.getUsername());
+                    request.setAttribute("pools", pools);
+                } catch (Exception e) {
+                   errors.add("Error receiving pools from database");
+                }
+                
+                List<Assessment.assessmentType> aTypes = new ArrayList<>(Arrays.asList(Assessment.assessmentType.values()));
+                request.setAttribute("aTypes", aTypes);
                 boolean isValid = true;
                 int retakes;
                 String retakesString = request.getParameter("retakes");
+                String assessmentType = request.getParameter("aType");
+                
                 if (retakesString == null || retakesString.isEmpty()) {
                     errors.add("Retakes must not be null or empty.");
                     isValid = false;
@@ -87,8 +99,14 @@ public class TeacherController extends HttpServlet {
                     }
                 }
                 
+                if (assessmentType == null || assessmentType.isEmpty()) {
+                    errors.add("Assessment type must be chosen.");
+                    isValid = false;
+                }
+                
                 if (isValid) {
-                    message = "Quiz creation successful";
+                    message = "Quiz creation successful \n"+retakesString+"\n"+assessmentType;
+                    
                 } else {
                     message = "Quiz creation unsuccessful";
                 }

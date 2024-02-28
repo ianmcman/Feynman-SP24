@@ -16,15 +16,20 @@ public class Assessment implements Serializable{
     public boolean isRandom;
     public int retakes;
     public int length;
-    public String assessmentType;
+    public enum assessmentType {
+        DRILL,
+        PLACEMENT,
+        EXAM;
+    }
+    private assessmentType aType;
 
-    public Assessment(int assessmentID, String assessmentName, boolean isRandom, int retakes, int length, String assessmentType) {
+    public Assessment(int assessmentID, String assessmentName, boolean isRandom, int retakes, int length, assessmentType aType) {
         this.assessmentID = assessmentID;
         this.assessmentName = assessmentName;
         this.isRandom = isRandom;
         this.retakes = retakes;
         this.length = length;
-        this.assessmentType = assessmentType;
+        this.aType = aType;
     }
     
     public int getAssessmentID() {
@@ -67,14 +72,13 @@ public class Assessment implements Serializable{
         this.length = length;
     }
 
-    public String getAssessmentType() {
-        return assessmentType;
+    public assessmentType getaType() {
+        return aType;
     }
 
-    public void setAssessmentType(String assessmentType) {
-        this.assessmentType = assessmentType;
-    }
-    
+    public void setaType(assessmentType aType) {
+        this.aType = aType;
+    }   
     
 }
 
