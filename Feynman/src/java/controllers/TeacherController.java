@@ -34,12 +34,12 @@ public class TeacherController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
+        User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
 //        if (loggedInUser == null) {
 //            response.sendRedirect("Public");
 //            return;
 //        }
-        
+        request.setAttribute("loggedInUser", loggedInUser);
         String url = "/Teacher/index.jsp";
         String action = request.getParameter("action");
         ArrayList<String> errors = new ArrayList();
@@ -51,11 +51,12 @@ public class TeacherController extends HttpServlet {
 
         switch (action) {
             case "qPHome":
-                // request.setAttribute("loggedInUser", loggedInUser);
+                
                 url = "/Teacher/qPoolIndex.jsp";
+                //List<QuestionPool> qPools = FeynmanDB.getQuestionPools(loggedInUser.getUserID());
+                //request.setAttribute("pools",qPools);
                 break;
             case "createQuizHome":
-                // request.setAttribute("loggedInUser", loggedInUser);
                 url = "/Teacher/createQuiz.jsp";
                 break;
             case "createQuiz":
@@ -86,6 +87,13 @@ public class TeacherController extends HttpServlet {
                     message = "Quiz creation unsuccessful";
                 }
                 
+                break;
+            case "addQPool":
+                url = "/Teacher/createQPool.jsp";
+                // need to pass redirect parameters
+                break;
+            case "createQPool":
+                //error handling and redirect to be added
                 break;
             case "addQuestion":
                 // request.setAttribute("loggedInUser", loggedInUser);
