@@ -12,6 +12,12 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
+        <nav>
+            <a href="<c:url value='Public?action=login' />"> Login</a> |
+            <a href="<c:url value='Public?action=register' />">Register</a> | 
+            <a href="<c:url value='Teacher' />">Teachers</a>
+        </nav>
+        
+        <h1>Admin Home</h1>
     </body>
 </html>

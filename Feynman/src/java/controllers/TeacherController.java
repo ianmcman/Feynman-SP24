@@ -87,6 +87,13 @@ public class TeacherController extends HttpServlet {
                 }
                 
                 break;
+            case "addQuestion":
+                // request.setAttribute("loggedInUser", loggedInUser);
+                url = "/Teacher/createQuestion.jsp";
+                break;
+            case "default":
+                // request.setAttribute("loggedInUser", loggedInUser);
+                url = "/Teacher/index.jsp";
             default: 
                 break;
         }
