@@ -12,15 +12,9 @@
         <nav>
             <a href="<c:url value='Public?action=login' />"> Login</a> |
             <a href="<c:url value='Public?action=register' />">Register</a> | 
-            <a href="<c:url value='Teacher' />">Teachers</a>
+            <a href="<c:url value='Teacher' />">Temp Teachers</a> |
+            <a href="<c:url value='Private?action=dashboard' />">Dashboard</a>
         </nav>
-        <div>  
-            <p>UserID: <c:out value='${user.userID}'/></p>
-            <p>Username: <c:out value='${user.username}'/></p>
-            <p>FirstName: <c:out value='${user.firstName}'/></p>
-            <p>LastName: <c:out value='${user.lastName}'/></p>
-            <p>Password: <c:out value='${user.password}'/></p>
-            <p>Roles: <c:out value='${user.roles}'/></p>
-        </div>
+
     </body>
 </html>

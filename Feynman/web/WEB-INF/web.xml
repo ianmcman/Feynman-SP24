@@ -5,6 +5,10 @@
         <servlet-class>controllers.Public</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>Private</servlet-name>
+        <servlet-class>controllers.Private</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>Student</servlet-name>
         <servlet-class>controllers.StudentController</servlet-class>
     </servlet>
@@ -23,6 +27,10 @@
     <servlet-mapping>
         <servlet-name>Public</servlet-name>
         <url-pattern>/Public</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Private</servlet-name>
+        <url-pattern>/Private</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Student</servlet-name>
