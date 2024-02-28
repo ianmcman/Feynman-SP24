@@ -81,10 +81,11 @@ public class FeynmanDB {
         ArrayList<User> users = new ArrayList<>();
         
         String query1 = "SELECT * FROM user \n";
-        String query2 = "SELECT * FROM userroles \n" +
-                        "JOIN roles \n" +
-                        "	on userroles.RoleID = roles.RoleID \n" +
-                        "WHERE UserID = ?";
+        String query2 = """
+                        SELECT RoleName FROM userroles 
+                        JOIN roles 
+                        ON userroles.RoleID = roles.RoleID 
+                        WHERE UserID = ?""";
         
  
         try (Connection connection = pool.getConnection();
@@ -95,11 +96,11 @@ public class FeynmanDB {
                 String username = rs.getString("Username");
                 String firstName = rs.getString("FirstName");
                 String lastName = rs.getString("LastName");
+                ArrayList<String> roles = new ArrayList<>();
                 
                 try (PreparedStatement ps = connection.prepareStatement(query2)) {
                     ps.setInt(1, userID);
                     try (ResultSet rolesRs = ps.executeQuery()) {
-                        ArrayList<String> roles = new ArrayList<>();
                         while (rs.next()) {
                             roles.add(rolesRs.getString("RoleName"));
                         }
@@ -107,29 +108,11 @@ public class FeynmanDB {
                 }
                 
                 User user = new User(userID, username, roles, firstName, lastName);
-
-                
-                    
-
-            
-                
-            }
-            try ) {
-                if (rs.next()) {
-                    user = new User(username, password);
-                    ArrayList<String> roles = new ArrayList<>();
-                    user.setFullName(, 
-                                     );
-                    user.setUserID(rs.getInt("userID"));
-                    do {
-                        roles.add(rs.getString("RoleName"));
-                    } while(rs.next());
-                    user.setRoles(roles);
-                }
+                users.add(user); 
             }
         }
         
-        return user;
+        return users;
 
     }   
 
