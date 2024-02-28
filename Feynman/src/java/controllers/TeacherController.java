@@ -4,6 +4,7 @@
  */
 package controllers;
 
+import business.Question;
 import business.QuestionPool;
 import business.User;
 import data.FeynmanDB;
@@ -16,6 +17,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -44,7 +48,10 @@ public class TeacherController extends HttpServlet {
         String action = request.getParameter("action");
         ArrayList<String> errors = new ArrayList();
         String message = "";
-
+        ArrayList<String> qTypes = new ArrayList(EnumSet.allOf(Question.questionType.class));
+        String rPage = request.getParameter("rPage");
+        String rIndex = request.getParameter("rIndex");
+                
         if (action == null) {
             action = "default";
         }
@@ -86,6 +93,55 @@ public class TeacherController extends HttpServlet {
                     message = "Quiz creation unsuccessful";
                 }
                 
+                break;
+            case "addQ":
+                url = "/Teacher/createQuestion.jsp";
+                request.setAttribute("rPage",rPage);
+                request.setAttribute("rIndex",rIndex);
+                request.setAttribute("qTypes",qTypes);
+                break;
+            case "createQ":
+                String qText = request.getParameter("qText");
+                String qAnswer = request.getParameter("qAnswer");
+                String rawqDiff = request.getParameter("qDiff");
+                int qDiff;
+                String rawqType = request.getParameter("qType");
+                Question.questionType qType;
+                if(qText.isBlank()){errors.add("Question text can't be blank.");}
+                if(qAnswer.isBlank()){errors.add("Answer can't be blank.");}
+                if(rawqDiff.isBlank()){errors.add("Difficulty can't be blank.");}
+                else {
+                    try {
+                        qDiff = Integer.parseInt(rawqDiff);
+                        if(1>qDiff||5<qDiff){throw new Exception();}
+                    }catch(Exception e){
+                        errors.add("Difficulty must be a number between 1 and 5 inclusive.");
+                    }
+                }
+                try{
+                    qType = Question.questionType.valueOf(rawqType);
+                }catch (IllegalArgumentException e){
+                    errors.add("Question type can't be custom.");
+                    rawqType="";
+                }
+                if(!errors.isEmpty()){
+                    //return to question form
+                    request.setAttribute("qText",qText);
+                    request.setAttribute("qAnswer",qAnswer);
+                    request.setAttribute("qDiff",rawqDiff);
+                    request.setAttribute("qType",rawqType);
+                    request.setAttribute("qTypes",qTypes);
+                    url = "/Teacher/createQuestion.jsp";
+                    request.setAttribute("rPage",rPage);
+                    request.setAttribute("rIndex",rIndex);
+                }else{
+                    //add question to DB
+                switch(rPage){
+                    case "index":
+                    default:
+                        url = "/Teacher/index.jsp";
+                }
+                }
                 break;
             default: 
                 break;

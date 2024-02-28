@@ -256,6 +256,7 @@ public class FeynmanDB {
     }
     
     public static int addQuestion(Question q){
+        int ID = 0;
         List<Question> qs = getAllQuestions();
         for(Question question : qs){
             if(question.compareQuestion(q)){
@@ -280,34 +281,49 @@ public class FeynmanDB {
                 qSub = true;
                 break;
         }
-        
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
         String queryAdd = "INSERT INTO question " +
                             "(QFormula, QAnswer, QDifficulty, QInclMult, QInclDiv, QInclAdd, QInclSub) " +
                             "VALUES (?,?,?,?,?,?,?)";
         String queryID = "SELECT QID FROM question WHERE QFormula= ?";
-        /*
+        
         try {
-            ps = connection.prepareStatement(queryADD);
-            rs = ps.executeQuery();
+            ps = connection.prepareStatement(queryAdd);
+            ps.setString(1,q.getQuestionText());
+            ps.setString(2,q.getAnswer());
+            ps.setInt(3, q.getDifficulty());
+            ps.setBoolean(4, qMult);
+            ps.setBoolean(5, qDiv);
+            ps.setBoolean(6, qAdd);
+            ps.setBoolean(7, qSub);
+            int update = ps.executeUpdate();
+            if(1 > update){ throw new SQLException();}
             
-            return qs;
+            ps = connection.prepareStatement(queryID);
+            ps.setString(1, q.getQuestionText());
+            rs = ps.executeQuery();
+            ID = rs.getInt("QID");
+            if(ID == 0){ throw new SQLException();}
         } catch (SQLException e) {
-            LOG.log(Level.SEVERE, "*** SQLException: getAllQuestions", e);
+            LOG.log(Level.SEVERE, "*** SQLException: addQuestion", e);
             System.out.println(e);
-            return null;
+            return -1;
         } finally {
             try {
                 rs.close();
                 ps.close();
                 pool.freeConnection(connection);
             } catch (SQLException e) {
-                LOG.log(Level.SEVERE, "*** SQLException: cleaning up getAllQuestions", e);
+                LOG.log(Level.SEVERE, "*** SQLException: cleaning up addQuestion", e);
                 System.out.println(e);
+                return -1;
             }
         }
-        */
-        // FIX THIS PART ME!!!
-        return -1;
+        
+        return ID;
     }
     
     public static List<Attempt> getStudentAttempts(int userID){
