@@ -18,8 +18,8 @@ public class Teacher extends User implements Serializable {
     
     public Teacher() {}
     
-    public Teacher (List<Assessment> tests, List<QuestionPool> pools, int UID, String username, String password, Integer roleID, ArrayList<String> roles, String firstName, String lastName){
-        super(UID, username, password, roleID, roles, firstName, lastName);
+    public Teacher (List<Assessment> tests, List<QuestionPool> pools, int UID, String username, String password, ArrayList<String> roles, String firstName, String lastName){
+        super(UID, username, password, roles, firstName, lastName);
         this.assessments = tests;
         this.qPools = pools;
     }

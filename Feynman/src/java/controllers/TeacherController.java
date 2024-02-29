@@ -75,7 +75,7 @@ public class TeacherController extends HttpServlet {
             case "createQuiz":
                 url = "/Teacher/createQuiz.jsp";
                 try {
-                    List<QuestionPool> pools = FeynmanDB.getQuestionPools(loggedInuser.getUsername());
+                    List<QuestionPool> pools = FeynmanDB.getQuestionPools(user.getUserID());
                     request.setAttribute("pools", pools);
                 } catch (Exception e) {
                    errors.add("Error receiving pools from database");
@@ -154,6 +154,10 @@ public class TeacherController extends HttpServlet {
                     request.setAttribute("rIndex",rIndex);
                 }else{
                     //add question to DB
+                    Question q = new Question(-1,qText,qAnswer,qType,qDiff);
+                    int id = FeynmanDB.addQuestion(q);
+                    if(id == -1){errors.add("There was a problem with adding the question to the database.");}
+                    else{q.setID(id);}
                 switch(rPage){
                     case "index":
                     default:

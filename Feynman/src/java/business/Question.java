@@ -78,4 +78,7 @@ public class Question {
     public int getID(){
         return questionID;
     }
+    public void setID(int id){
+        this.questionID = id;
+    }
 }
