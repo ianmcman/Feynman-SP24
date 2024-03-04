@@ -13,6 +13,6 @@
     </head>
     <body>
         <h1>Temp test page</h1>
-        <a href="<c:url value='Student?action=studentResults' />"> Student Attempts</a>
+        <a href="Student?action=studentAttempts"> Student Attempts</a>
     </body>
 </html>

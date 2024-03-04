@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
@@ -154,10 +155,10 @@ public class TeacherController extends HttpServlet {
                     request.setAttribute("rIndex",rIndex);
                 }else{
                     //add question to DB
-                    Question q = new Question(-1,qText,qAnswer,qType,qDiff);
-                    int id = FeynmanDB.addQuestion(q);
-                    if(id == -1){errors.add("There was a problem with adding the question to the database.");}
-                    else{q.setID(id);}
+//                    Question q = new Question(-1,qText,qAnswer,qType,qDiff);
+//                    int id = FeynmanDB.addQuestion(q);
+//                    if(id == -1){errors.add("There was a problem with adding the question to the database.");}
+//                    else{q.setID(id);}
                 switch(rPage){
                     case "index":
                     default:

@@ -52,8 +52,8 @@ public class StudentController extends HttpServlet {
         }
 
         switch (action) {
-            case "studentResults":
-                url = "/Student/studentResults.jsp";
+            case "studentAttempts":
+                url = "/Student/studentAttempts.jsp";
                 List<Attempt> studentAttempts = FeynmanDB.getStudentAttempts(1);//temp value still need to be modified
                 request.setAttribute("studentAttempts", studentAttempts);
             default:

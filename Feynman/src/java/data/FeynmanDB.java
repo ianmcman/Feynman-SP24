@@ -10,6 +10,7 @@ import business.QuestionPool;
 import business.Student;
 import business.User;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -510,13 +511,12 @@ public class FeynmanDB {
         Connection connection = pool.getConnection();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        Attempt attempt = null;
-        Question question = null;
 
         
-        String query = "SELECT userID, attemptID FROM assessmentattempts AS aa" +
-                "JOIN assessmentattemptquestions AS aaq ON aa.attemptID = aaq.attemptID" +
-                "JOIN question as q ON aaq.QID = q.QID" +
+        String query = "SELECT aa.userID, aa.attemptID, aa.attemptTimestamp, aaq.correctAnswer, q.QID, q.QFormula, q.QAnswer, q.QDifficulty, q.QInclMult, q.QInclDiv, q.QInclAdd, q.QInclSub  " +
+                "FROM assessmentattempts AS aa  " +
+                "JOIN assessmentattemptquestions AS aaq ON aa.attemptID = aaq.attemptID " +
+                "JOIN question as q ON aaq.QID = q.QID " + 
                 "WHERE userID = ?"; //need to do query
         
         List<Attempt> studentAttempts = new ArrayList<>();
@@ -530,22 +530,40 @@ public class FeynmanDB {
             rs = ps.executeQuery();
             while(rs.next()){
                 //need to get: attemptID, studentID, attemptScore, attemptdate, inccorectQuestions, correctQuestions set to Attempt class; then added to list
-                attempt.setStudentID(rs.getInt("userID"));
-                attempt.setAttemptID(rs.getInt("attemptID"));
                 
-                //question.setQuestionID(rs.getInt("QID"));
-                question.setQuestionText(rs.getString("QFormula"));
-                question.setAnswer(rs.getString("QAnswer"));
-                //question.setqType();
-                question.setDifficulty(rs.getInt("QDifficulty"));
-                if(rs.getBoolean("correctAnswer")){
+                //set question
+                int questionID = rs.getInt("QID");
+                String formula = rs.getString("QFormula");
+                String answer = rs.getString("QAnswer");
+                //questionType
+                Boolean qMult = rs.getBoolean("QInclMult");
+                Boolean qDiv = rs.getBoolean("QInclDiv");
+                Boolean qAdd = rs.getBoolean("QInclAdd");
+                Boolean qSub = rs.getBoolean("QInclSub");
+                Question.questionType qType=null;
+                if (qDiv) {qType = Question.questionType.DIVISION;}
+                else if(qMult){qType = Question.questionType.MULTIPLICATION;}
+                else if(qSub) {qType = Question.questionType.SUBTRACTION;}
+                else if(qAdd) {qType = Question.questionType.ADDITION;}
+                int difficulty = rs.getInt("QDifficulty");
+                Question question = new Question(questionID, formula, answer, qType, difficulty);
+                
+                //set right or wrong answers 
+                if(rs.getInt("correctAnswer") == 1){
                     correctQuestions.add(question);
                 } else {
                     incorrectQuestions.add(question);
                 }
-                attempt.setCorrectQuestions(correctQuestions);
-                attempt.setIncorrectQuestions(incorrectQuestions);
-                studentAttempts.add(attempt);
+                
+                //set attempt 
+                int attemptID = rs.getInt("attemptID");
+                int studentID = rs.getInt("userID");
+                LocalDateTime attemptDate = rs.getTimestamp("attemptTimestamp").toLocalDateTime();
+                double attemptScore = correctQuestions.size() / (correctQuestions.size() + incorrectQuestions.size());
+                
+                Attempt attempt = new Attempt(attemptID, studentID, attemptScore, attemptDate, incorrectQuestions, correctQuestions);
+                
+                studentAttempts.add(attempt);//this is good, but need to find distinction between diff attempts
             }
             return studentAttempts;
             
