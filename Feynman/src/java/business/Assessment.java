@@ -16,6 +16,7 @@ public class Assessment implements Serializable{
     public boolean isRandom;
     public int retakes;
     public int length;
+    public int poolID;
     public enum assessmentType {
         DRILL,
         PLACEMENT,
@@ -23,12 +24,20 @@ public class Assessment implements Serializable{
     }
     private assessmentType aType;
 
-    public Assessment(int assessmentID, String assessmentName, boolean isRandom, int retakes, int length, assessmentType aType) {
+    public Assessment(int assessmentID, String assessmentName, boolean isRandom, int retakes, int length, int poolID, assessmentType aType) {
         this.assessmentID = assessmentID;
         this.assessmentName = assessmentName;
         this.isRandom = isRandom;
         this.retakes = retakes;
         this.length = length;
+        this.poolID = poolID;
+        this.aType = aType;
+    }
+
+    public Assessment(String assessmentName, int retakes, int poolID, assessmentType aType) {
+        this.assessmentName = assessmentName;
+        this.retakes = retakes;
+        this.poolID = poolID;
         this.aType = aType;
     }
     
@@ -79,6 +88,15 @@ public class Assessment implements Serializable{
     public void setaType(assessmentType aType) {
         this.aType = aType;
     }   
+
+    public int getPoolID() {
+        return poolID;
+    }
+
+    public void setPoolID(int poolID) {
+        this.poolID = poolID;
+    }
+    
     
 }
 

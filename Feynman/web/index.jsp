@@ -12,8 +12,8 @@
         <nav>
             <a href="<c:url value='Public?action=login' />"> Login</a> |
             <a href="<c:url value='Public?action=register' />">Register</a> | 
-            <a href="<c:url value='Private?action=dashboard' />">Dashboard</a>
-            <a href="<c:url value='Teacher' />">Teachers</a>
+            <a href="<c:url value='Private?action=dashboard' />">Dashboard</a> |
+            <a href="<c:url value='Teacher' />">Teachers</a> |
             <a href="<c:url value='Student' />">Student</a>
         </nav>
 
