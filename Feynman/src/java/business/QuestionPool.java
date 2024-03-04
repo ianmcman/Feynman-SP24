@@ -18,6 +18,25 @@ public class QuestionPool {
     
     private List<Question> poolQuestions;
     
+    public QuestionPool(String name){
+        this.name = name;
+        this.poolQuestions = new ArrayList();
+        this.ID = -1;
+    }
+    
+    public QuestionPool(String name, ArrayList<Question> pool){
+        this.name = name;
+        this.poolQuestions = pool;
+        this.ID = -1;
+    }
+    
+    public QuestionPool(int ID, String name, ArrayList<Question> pool){
+        this.name = name;
+        this.poolQuestions = pool;
+        this.ID = ID;
+    }
+    
+    
     public void setName(String name){
         this.name = name;
     }
@@ -81,4 +100,13 @@ public class QuestionPool {
         
         return questionTypes;
     }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+    
 }

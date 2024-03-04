@@ -13,7 +13,7 @@
             <input type="hidden" value="<c:out value='${rPage}'/>" name="rPage" />
             <input type="hidden" value="<c:out value='${rIndex}'/>" name="rIndex" />
             <label for="qPName">Name for Question Pool: </label>
-            <input type="text" value="<c:out value='${qText}'/>" name="qPName" id="qPName"/><br>
+            <input type="text" value="<c:out value='${qPName}'/>" name="qPName" id="qPName"/><br>
             <input type="submit"/>
         </form>
         <c:forEach items="${errors}" var="error">

@@ -9,7 +9,7 @@
     </head>
     <body>
         <h1>New Question: </h1>
-        <form action="<c:url value='Teacher?action=createQ' />" method="post">
+        <form action="<c:url value='Teacher?action=createQuestion' />" method="post">
             <input type="hidden" value="<c:out value='${rPage}'/>" name="rPage" />
             <input type="hidden" value="<c:out value='${rIndex}'/>" name="rIndex" />
             <label for="qText">Question text: </label>

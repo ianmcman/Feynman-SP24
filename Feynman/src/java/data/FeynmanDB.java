@@ -116,20 +116,20 @@ public class FeynmanDB {
 
     }   
 
-    
+    // Modify!! add a load questions into question pool function, then split get Question Pools into a get names, and get full
     public static List<QuestionPool> getQuestionPools(int userID){
         ConnectionPool pool = ConnectionPool.getInstance();
         Connection connection = pool.getConnection();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         List<QuestionPool> qPools = new ArrayList();
         QuestionPool qPool = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
         
         String query = "SELECT * FROM pool as p "
                 + "JOIN userpools as up ON p.PoolID=up.PoolID "
-                + "JOIN questionpools as qp ON p.PoolID=qp.PoolID "
-                + "JOIN question as q ON qp.QID=q.QID "
-                + "WHERE UserID = ? ORDER BY PoolID ASC";
+                + "LEFT JOIN questionpools as qp ON p.PoolID=qp.PoolID "
+                + "LEFT JOIN question as q ON qp.QID=q.QID "
+                + "WHERE UserID = ? ORDER BY p.PoolID ASC";
         try {
             ps = connection.prepareStatement(query);
             ps.setInt(1, userID);
@@ -138,7 +138,7 @@ public class FeynmanDB {
                 // Initializes the Question Pool, or adds it to the list and resets the Pool
                 String pName = rs.getString("PoolName");
                 if(null == qPool){
-                    qPool.setName(pName);
+                    qPool = new QuestionPool(pName);
                 }else if(qPool.getName() != pName){
                     qPools.add(qPool);
                     qPool = null;
@@ -146,21 +146,23 @@ public class FeynmanDB {
                 }
                 // Loads a Question into the Question Pool
                 int qID = rs.getInt("q.QID");
-                String qForm = rs.getString("QFormula");
-                String qAnswer = rs.getString("QAnswer");
-                String qDif = rs.getString("QDifficulty");
-                Boolean qMult = rs.getBoolean("QInclMult");
-                Boolean qDiv = rs.getBoolean("QInclDiv");
-                Boolean qAdd = rs.getBoolean("QInclAdd");
-                Boolean qSub = rs.getBoolean("QInclSub");
-                int qDifficulty = Integer.parseInt(qDif);
-                Question.questionType qType=null;
-                if (qDiv) {qType = Question.questionType.DIVISION;}
-                else if(qMult){qType = Question.questionType.MULTIPLICATION;}
-                else if(qSub) {qType = Question.questionType.SUBTRACTION;}
-                else if(qAdd) {qType = Question.questionType.ADDITION;}
-                Question q = new Question(qID, qForm, qAnswer, qType, qDifficulty);
-                qPool.addQuestion(q);
+                //if (){ NEED TO FIGURE out how to not try to add null questions...
+                    String qForm = rs.getString("QFormula");
+                    String qAnswer = rs.getString("QAnswer");
+                    String qDif = rs.getString("QDifficulty");
+                    Boolean qMult = rs.getBoolean("QInclMult");
+                    Boolean qDiv = rs.getBoolean("QInclDiv");
+                    Boolean qAdd = rs.getBoolean("QInclAdd");
+                    Boolean qSub = rs.getBoolean("QInclSub");
+                    int qDifficulty = Integer.parseInt(qDif);
+                    Question.questionType qType=null;
+                    if (qDiv) {qType = Question.questionType.DIVISION;}
+                    else if(qMult){qType = Question.questionType.MULTIPLICATION;}
+                    else if(qSub) {qType = Question.questionType.SUBTRACTION;}
+                    else if(qAdd) {qType = Question.questionType.ADDITION;}
+                    Question q = new Question(qID, qForm, qAnswer, qType, qDifficulty);
+                    qPool.addQuestion(q);
+                //}
             }
             return qPools;
         } catch (SQLException e) {
@@ -172,8 +174,8 @@ public class FeynmanDB {
                 rs.close();
                 ps.close();
                 pool.freeConnection(connection);
-            } catch (SQLException e) {
-                LOG.log(Level.SEVERE, "*** SQLException: cleaning up getQuestionPools", e);
+            } catch (Exception e) {
+                LOG.log(Level.SEVERE, "*** Exception: cleaning up getQuestionPools", e);
                 System.out.println(e);
             }
         }
@@ -268,13 +270,13 @@ public class FeynmanDB {
         ResultSet rs = null;
         String queryPoolAdd = "INSERT INTO pool " +
                             "(PoolName) VALUES (?)";
-        String queryGetPoolID = "SELECT PoolID FROM pool " +
+        String queryGetPoolID = "SELECT * FROM pool " +
                                 "WHERE PoolName = ?";
         String queryLinkUserPool = "INSERT INTO userpools " +
                                     "(UserID, PoolID) VALUES (?, ?)";
         String queryLinkQuestionPool = "INSERT INTO questionpools " +
                                         "(QID, PoolID) VALUES (?, ?)";
-        int poolID;
+        int poolID = -1;
         try{
             ps = connection.prepareStatement(queryPoolAdd);
             ps.setString(1, qPool.getName());
@@ -289,7 +291,9 @@ public class FeynmanDB {
             ps = connection.prepareStatement(queryGetPoolID);
             ps.setString(1, qPool.getName());
             rs = ps.executeQuery();
-            poolID = rs.getInt("PoolID");
+            while(rs.next()){
+                poolID = rs.getInt("PoolID");
+            }
         }catch (SQLException e) {
             LOG.log(Level.SEVERE, "*** SQLException: addQuestionPool getting Question Pool ID", e);
             System.out.println(e);
@@ -304,6 +308,10 @@ public class FeynmanDB {
         }catch (SQLException e) {
             LOG.log(Level.SEVERE, "*** SQLException: addQuestionPool Linking User to Question Pool", e);
             System.out.println(e);
+            if(poolID == -1){
+                System.out.println("Pool ID never read.");
+                LOG.log(Level.SEVERE, "*** Pool ID never read.", e);
+            }
             return -1;
         } 
         try{

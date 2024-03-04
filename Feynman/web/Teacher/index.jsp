@@ -26,5 +26,9 @@
         <a href="<c:url value='Teacher?action=qPHome' />"> qPool</a> | 
         <a href="<c:url value='Teacher?action=createQuizHome' />"> Create Quiz</a> | 
         <a href="<c:url value='Teacher?action=addQuestion' />"> Add Question </a>
+        
+        <c:forEach items="${errors}" var="error">
+        <li>${error}</li>
+        </c:forEach>
     </body>
 </html>
