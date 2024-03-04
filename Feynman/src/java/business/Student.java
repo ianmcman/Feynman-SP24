@@ -20,7 +20,7 @@ public class Student extends User implements Serializable {
     public Student(){}
     
     public Student (List<Assessment> tests, List<Attempt> grades, int UID, String username, String password, Integer roleID, ArrayList<String> roles, String firstName, String lastName){
-        super(UID, username, password, roleID, roles, firstName, lastName);
+        //super(UID, username, password, roleID, roles, firstName, lastName);
         this.assessments = tests;
         this.assessmentGrades = grades;
     }
