@@ -25,6 +25,6 @@
         
         <a href="<c:url value='Teacher?action=qPHome' />"> qPool</a> | 
         <a href="<c:url value='Teacher?action=createQuizHome' />"> Create Quiz</a> | 
-        <a href="<c:url value='Teacher?action=addQuestion' />"> Add Question </a>
+        <a href="<c:url value='Teacher?action=addQ' />"> Add Question </a>
     </body>
 </html>
