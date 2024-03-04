@@ -4,6 +4,7 @@
  */
 package data;
 
+import business.Assessment;
 import business.Attempt;
 import business.Question;
 import business.QuestionPool;
@@ -159,7 +160,7 @@ public class FeynmanDB {
 
     
     
-    public static List<QuestionPool> getQuestionPools(int userID){
+    public static List<QuestionPool> getQuestionPools(int userID) throws SQLException{
         ConnectionPool pool = ConnectionPool.getInstance();
         Connection connection = pool.getConnection();
         PreparedStatement ps = null;
@@ -171,7 +172,7 @@ public class FeynmanDB {
                 + "JOIN userpools as up ON p.PoolID=up.PoolID "
                 + "JOIN questionpools as qp ON p.PoolID=qp.PoolID "
                 + "JOIN question as q ON qp.QID=q.QID "
-                + "WHERE UserID = ? ORDER BY PoolID ASC";
+                + "WHERE UserID = ? ORDER BY p.PoolID ASC";
         try {
             ps = connection.prepareStatement(query);
             ps.setInt(1, userID);
@@ -547,6 +548,16 @@ public class FeynmanDB {
         return ID;
     }
     
+    //public static int addAssessment(Assessment a) {
+      //  ConnectionPool pool = ConnectionPool.getInstance();
+      //  Connection connection = pool.getConnection();
+      //  PreparedStatement ps = null;
+      //  ResultSet rs = null;
+        
+    // }
+    
+    
+      
     public static List<Attempt> getStudentAttempts(int userID){
         ConnectionPool pool = ConnectionPool.getInstance();
         Connection connection = pool.getConnection();

@@ -9,6 +9,7 @@ import business.QuestionPool;
 import business.User;
 import data.FeynmanDB;
 import business.Assessment;
+import static data.FeynmanDB.getQuestionPool;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
@@ -57,7 +59,15 @@ public class TeacherController extends HttpServlet {
         ArrayList<String> qTypes = new ArrayList(EnumSet.allOf(Question.questionType.class));
         String rPage = request.getParameter("rPage");
         String rIndex = request.getParameter("rIndex");
-                
+        ArrayList<String> assessmentTypes = new ArrayList(EnumSet.allOf(Assessment.assessmentType.class));
+        List<QuestionPool> pools = null;
+        int retakes;
+        try {
+            pools = FeynmanDB.getQuestionPools(user.getUserID());
+        } catch (SQLException e) {
+            errors.add("SQL Exception retrieving pools.");
+        }
+        
         if (action == null) {
             action = "default";
         }
@@ -71,26 +81,40 @@ public class TeacherController extends HttpServlet {
                 break;
             case "createQuizHome":
                 url = "/Teacher/createQuiz.jsp";
+                request.setAttribute("pools", pools);
+                request.setAttribute("aTypes", assessmentTypes);
+
                 break;
             case "createQuiz":
                 url = "/Teacher/createQuiz.jsp";
-                try {
-                    List<QuestionPool> pools = FeynmanDB.getQuestionPools(user.getUserID());
-                    request.setAttribute("pools", pools);
-                } catch (Exception e) {
-                   errors.add("Error receiving pools from database");
+                
+                boolean isValid = true;
+                retakes = 0;
+                String retakesString = request.getParameter("retakes");
+                String infiniteRetakesString = request.getParameter("infiniteRetakes");
+                String poolChoiceString = request.getParameter("poolchoice");
+                int poolChoice;
+                String name = request.getParameter("name");
+                String rawAType = request.getParameter("aType");
+                Assessment.assessmentType aType = null;
+                boolean infiniteRetakes = false;
+                System.err.println(retakesString);
+                
+                if (name == null || name.isBlank()) {
+                    errors.add("Name must not be null or empty.");
+                    isValid = false;
                 }
                 
-                List<Assessment.assessmentType> aTypes = new ArrayList<>(Arrays.asList(Assessment.assessmentType.values()));
-                request.setAttribute("aTypes", aTypes);
-                boolean isValid = true;
-                int retakes;
-                String retakesString = request.getParameter("retakes");
-                String assessmentType = request.getParameter("aType");
-                
-                if (retakesString == null || retakesString.isEmpty()) {
-                    errors.add("Retakes must not be null or empty.");
-                    isValid = false;
+                if (retakesString == null) {
+                    if (infiniteRetakesString == null) {
+                        infiniteRetakes = false;
+                    } else if (infiniteRetakesString.equalsIgnoreCase("on")) {
+                        infiniteRetakes = true;
+                        retakes = 1000;
+                    } else {
+                        errors.add("Retakes must not be null or empty.");
+                        isValid = false;
+                    }
                 } else {
                     retakes = Integer.parseInt(retakesString);
                     if (retakes < 0) {
@@ -99,17 +123,38 @@ public class TeacherController extends HttpServlet {
                     }
                 }
                 
-                if (assessmentType == null || assessmentType.isEmpty()) {
-                    errors.add("Assessment type must be chosen.");
+                if (poolChoiceString == null || poolChoiceString.isBlank()) {
+                    errors.add("Pool choice must not be null or empty.");
                     isValid = false;
+                } else {
+                    try {
+                        poolChoice = Integer.parseInt(poolChoiceString);
+                        if (getQuestionPool(poolChoice, user.getUserID()) == null) {
+                            errors.add("That pool does not exist.");
+                        }
+                    } catch (NumberFormatException e) {
+                        errors.add("Pool choice must be a number.");
                 }
                 
-                if (isValid) {
-                    message = "Quiz creation successful \n"+retakesString+"\n"+assessmentType;
-                    
-                } else {
-                    message = "Quiz creation unsuccessful";
+                try {
+                    aType = Assessment.assessmentType.valueOf(rawAType);
+                } catch (IllegalArgumentException e) {
+                    errors.add("Assessment type can't be custom.");
+                    rawAType = "";
                 }
+                
+                if (!isValid) {
+                    message = "Quiz creation unsuccessful";
+                    request.setAttribute("retakes", retakesString);
+                    request.setAttribute("infiniteRetakes", infiniteRetakesString);
+                    request.setAttribute("poolChoice", pools);
+                    request.setAttribute("aTypes", assessmentTypes);
+                    request.setAttribute("name", name);
+                    request.setAttribute("aType", rawAType);
+                } // else {
+                   // Assessment a = new Assessment(name, retakes, aType, getQuestionPool(poolChoice, user.getUserID()));
+                    
+            }
                 
                 break;
             case "addQ":

@@ -24,10 +24,16 @@
         
         <form action="Teacher" method="post">
             <input type="hidden" name="action" value="createQuiz"/>
+            <label for="name">Assessment Name:</label>
+            <input id="name" name="name"/> <br><br>
             <label for="retakes">Retakes:</label>
-            <input id="retakes" type="number" name="retakes" min="1" value="1"><br><br>
+            <input id="retakes" type="number" name="retakes" min="0" value="0">
+            <label for="infiniteRetakes">Infinite Retakes?</label>
+            <input id="infiniteRetakes" type="checkbox" name="infiniteRetakes" 
+                   onclick="document.getElementById('retakes').disabled=this.checked;"/>                   
+            <br><br>
             <label for id="poolChoice">Question Pool for this Assessment:</label>
-            <select name="poolsList" id="poolChoice">
+            <select name="poolChoice" id="poolChoice">
                 <c:forEach items="${pools}" var="pool">
                     <option value="${pool.ID}">${pool.name}</option>
                 </c:forEach>
@@ -35,7 +41,6 @@
             
             <label for id="aType">Assessment Type:</label>
             <select name="aType" id="aType">
-                <option value="none" selected disabled hidden>Select an Option</option>
                 <c:forEach items="${aTypes}" var="type">
                     <option value="${type}"
                             <c:if test="${aType == type}">selected</c:if>>
