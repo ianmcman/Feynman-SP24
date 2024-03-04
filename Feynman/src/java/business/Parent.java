@@ -9,7 +9,7 @@ public class Parent extends User implements Serializable  {
     public Parent(ArrayList<Integer> childrenIDs, String username, 
             String password, Integer roleID, String firstName, String lastName) 
     {
-        super(username, password, roleID, firstName, lastName);
+        //super(username, password, roleID, firstName, lastName);
         this.childrenIDs = childrenIDs;
     }
 
