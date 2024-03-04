@@ -1,21 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controllers;
 
+import business.User;
+import data.FeynmanDB;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- *
- * @author im757299
- */
 public class Admin extends HttpServlet {
 
     /**
@@ -44,7 +39,6 @@ public class Admin extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -66,8 +60,30 @@ public class Admin extends HttpServlet {
         
         switch (action) {
             case "dashboard":
-                url = "/Admin/dashboard.jsp";
-                break;
+                try {
+                    ArrayList<User> users = FeynmanDB.getAllUsers();
+                    request.setAttribute("users", users);
+                    url = "/Admin/dashboard.jsp";
+                    request.getRequestDispatcher(url).forward(request, response);
+                    return;
+                } catch (SQLException e) {
+                    getServletContext().getRequestDispatcher("/login.jsp").forward(request, response);
+                    return;
+                }
+            case "edit":
+                int userToEditUserID = Integer.parseInt(request.getParameter("userID"));
+                try {
+                    User userToEdit = FeynmanDB.getUser(userToEditUserID);
+                    request.setAttribute("user", userToEdit);
+                    url = "/Admin/editUser.jsp";
+                    getServletContext().getRequestDispatcher(url).forward(request, response);
+                    String test = getServletContext().getContextPath();
+                    return;
+                } catch (SQLException e) {
+                    response.sendRedirect("Private?action=dashboard");
+                    return;
+                }
+                
         }
         
         request.setAttribute("errors", errors);
