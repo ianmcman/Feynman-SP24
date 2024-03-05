@@ -29,6 +29,11 @@
                         <input type="hidden" name="userID" value="${localUser.userID}" />
                         <input type="submit" value="Edit"/>
                     </form>
+                    <form action="Admin" method="get">
+                        <input type="hidden" name="action" value="delete" />
+                        <input type="hidden" name="userID" value="${localUser.userID}" />
+                        <input type="submit" value="Delete"/>
+                    </form>
                 </td>
             </tr>
             </c:forEach>    

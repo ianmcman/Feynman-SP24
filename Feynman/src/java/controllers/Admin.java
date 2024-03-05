@@ -50,6 +50,12 @@ public class Admin extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        if (!isAdmin(request, response)) {
+            response.sendRedirect("Public");
+            return;
+        }
+        
+        
         String action = request.getParameter("action");
         ArrayList<String> errors = new ArrayList<>();
         String url = new String();
@@ -83,7 +89,14 @@ public class Admin extends HttpServlet {
                     response.sendRedirect("Private?action=dashboard");
                     return;
                 }
-                
+            case "delete":
+                int userToDeleteUserID = Integer.parseInt(request.getParameter("userID"));
+                try {
+                    int rowsAffected = FeynmanDB.deleteUser(userToDeleteUserID);
+                } catch (SQLException e) {
+                    response.sendRedirect("Private?action=dashboard");
+                    return;
+                }
         }
         
         request.setAttribute("errors", errors);
@@ -102,7 +115,10 @@ public class Admin extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+                if (!isAdmin(request, response)) {
+            response.sendRedirect("Public");
+            return;
+        }
     }
 
     /**
@@ -115,4 +131,12 @@ public class Admin extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    private boolean isAdmin(HttpServletRequest request, HttpServletResponse response) {
+        User loggedInUser = (User) request.getSession().getAttribute("user");
+        if (loggedInUser == null || !loggedInUser.getRoles().contains("admin")) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
