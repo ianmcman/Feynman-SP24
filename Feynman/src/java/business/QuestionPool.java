@@ -36,6 +36,12 @@ public class QuestionPool {
         this.ID = ID;
     }
     
+    public QuestionPool(int ID, String name){
+        this.name = name;
+        this.ID = ID;
+        this.poolQuestions = new ArrayList();
+    }
+    
     
     public void setName(String name){
         this.name = name;

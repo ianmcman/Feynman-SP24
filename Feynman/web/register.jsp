@@ -37,6 +37,10 @@
                             <input type="checkbox" value="student" name="roles" />
                             <label for="student">Student</label>
                         </td>
+                        <td>
+                            <input type="checkbox" value="teacher" name="roles" />
+                            <label for="teacher">Teacher</label>
+                        </td>
                     </tr>
                 </table>
                 <input type="submit" value="Submit" />

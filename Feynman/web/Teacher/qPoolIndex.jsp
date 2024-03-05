@@ -18,17 +18,15 @@
         <h1>Question Pools</h1>
         <a href="<c:url value='Teacher?action=addQPool&rPage=index' />"> Add Question Pool</a>
         <c:choose>
-            <c:when test="${pools == null}">
+            <c:when test="${pools.isEmpty()}">
                 <h2>There are no pools currently</h2>
             </c:when>
             <c:otherwise >
-                <h2>help</h2>
                 <c:forEach items="${pools}" var="pool">
-                    <h2>me</h2>
-                    <h2><c:out value="${pool.getName()}"/></h2><br/>
+                    <h3><c:out value="${pool.getName()}"/></h3>
+                    <a href="<c:url value='Teacher?action=editQPool&rPage=index&rIndex=${pool.getID()}' />">edit</a><br/>
                 </c:forEach>
                     <a href="<c:url value='Teacher?action=addQPool&rPage=index' />"> Add Question Pool</a>
-                    <h3><c:out value="${pools}"/></h3>
             </c:otherwise >
         </c:choose>
         

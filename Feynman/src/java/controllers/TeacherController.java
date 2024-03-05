@@ -21,7 +21,6 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashSet;
-import java.util.Set;
 
 /**
  *
@@ -67,7 +66,7 @@ public class TeacherController extends HttpServlet {
             case "qPHome":
                 
                 url = "/Teacher/qPoolIndex.jsp";
-                ArrayList<QuestionPool> qPools = new ArrayList<>(FeynmanDB.getQuestionPools(user.getUserID()));
+                ArrayList<QuestionPool> qPools = new ArrayList<>(FeynmanDB.getQuestionPoolNames(user.getUserID()));
                 request.setAttribute("pools",qPools);
                 break;
             case "createQuizHome":
@@ -76,7 +75,7 @@ public class TeacherController extends HttpServlet {
             case "createQuiz":
                 url = "/Teacher/createQuiz.jsp";
                 try {
-                    List<QuestionPool> pools = FeynmanDB.getQuestionPools(user.getUserID());
+                    List<QuestionPool> pools = FeynmanDB.getQuestionPoolNames(user.getUserID());
                     request.setAttribute("pools", pools);
                 } catch (Exception e) {
                    errors.add("Error receiving pools from database");
@@ -124,10 +123,42 @@ public class TeacherController extends HttpServlet {
                 request.setAttribute("rPage",rPage);
                 request.setAttribute("rIndex",rIndex);
                 break;
+            case "editQPool":
+                url = "/Teacher/editQPool.jsp";
+                request.setAttribute("rPage", rPage);
+                request.setAttribute("rIndex",rIndex);
+                String edit = request.getParameter("edit");
+                if(null==edit){edit="";}
+                if(!rIndex.isBlank()){
+                    int ID = Integer.parseInt(rIndex);
+                    QuestionPool qp = FeynmanDB.getQuestionPool(ID,user.getUserID());
+                    switch(edit){
+                        case "rename":
+                            String name = request.getParameter("qPName");
+                            if(name.isBlank()){errors.add("Question Pool must have a name");}
+                            else{qp.setName(name);
+                                int e = FeynmanDB.renameQuestionPool(qp.getID(), name);
+                                if(e<1){errors.add("Question Pool failed to rename");}
+                            }
+                            break;
+                        case "addQ":
+                            //Add Question
+                            break;
+                        case "removeQ":
+                            //Remove Question
+                            break;
+                        default:
+                            break;
+                    }
+                    
+                    request.setAttribute("qp",qp);
+                }
+                break;
             case "createQuestion":
                 String qText = request.getParameter("qText");
                 String qAnswer = request.getParameter("qAnswer");
                 String rawqDiff = request.getParameter("qDiff");
+                Question q = null;
                 int qDiff = 0;
                 String rawqType = request.getParameter("qType");
                 Question.questionType qType = null;
@@ -150,7 +181,7 @@ public class TeacherController extends HttpServlet {
                 }
                 if(errors.isEmpty()){
                     //add question to DB
-                    Question q = new Question(-1,qText,qAnswer,qType,qDiff);
+                    q = new Question(-1,qText,qAnswer,qType,qDiff);
                     int id = FeynmanDB.addQuestion(q);
                     if(id == -1){errors.add("There was a problem with adding the question to the database.");}
                     else{q.setID(id);}
@@ -167,6 +198,16 @@ public class TeacherController extends HttpServlet {
                     request.setAttribute("rIndex",rIndex);
                 }else{
                     switch(rPage){
+                        case "editQP":
+                            url = "/Teacher/editQPool.jsp";
+                            request.setAttribute("rPage", rPage);
+                            request.setAttribute("rIndex",rIndex);
+                            int qpID = Integer.parseInt(rIndex);
+                            if(q != null && q.getID() != -1){FeynmanDB.addQuestionToPool(q.getID(),qpID);}
+                            QuestionPool qp = FeynmanDB.getQuestionPool(qpID, user.getUserID());
+                            request.setAttribute("qp",qp);
+                            
+                            break;
                         case "index":
                         default:
                             url = "/Teacher/index.jsp";
@@ -195,7 +236,7 @@ public class TeacherController extends HttpServlet {
                         case "index":
                         default:
                             url = "/Teacher/qPoolIndex.jsp";
-                            qPools = new ArrayList<>(FeynmanDB.getQuestionPools(user.getUserID()));
+                            qPools = new ArrayList<>(FeynmanDB.getQuestionPoolNames(user.getUserID()));
                             request.setAttribute("pools",qPools);
                     }
                 }
