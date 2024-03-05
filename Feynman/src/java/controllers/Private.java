@@ -84,6 +84,11 @@ public class Private extends HttpServlet {
                     return;
                 }                  
                 break;
+            case "logout": {
+                request.getSession().invalidate();
+                response.sendRedirect("Public");
+                return;
+            }
         }
     }
 
