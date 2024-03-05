@@ -10,7 +10,14 @@
     </head>
     <body>
         <nav>
-            <a href="<c:url value='Public?action=login' />"> Login</a> |
+        <c:choose>
+            <c:when test = "${sessionScope.user} != null"> 
+                <a href="<c:url value='Public?action=login' />"> Login</a> |    
+            </c:when>
+            <c:otherwise>
+                <a href="<c:url value='Private?action=logout' />"> Logout</a> | 
+            </c:otherwise>
+        </c:choose>
             <a href="<c:url value='Public?action=register' />">Register</a> | 
             <a href="<c:url value='Private?action=dashboard' />">Dashboard</a> |
             <a href="<c:url value='Teacher' />">Teachers</a> |
