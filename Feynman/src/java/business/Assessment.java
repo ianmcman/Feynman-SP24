@@ -24,6 +24,16 @@ public class Assessment implements Serializable{
     }
     private assessmentType aType;
 
+    public Assessment() {}
+
+    public Assessment(int assessmentID, String assessmentName, int retakes, int poolID, assessmentType aType) {
+        this.assessmentID = assessmentID;
+        this.assessmentName = assessmentName;
+        this.retakes = retakes;
+        this.poolID = poolID;
+        this.aType = aType;
+    }
+    
     public Assessment(int assessmentID, String assessmentName, boolean isRandom, int retakes, int length, int poolID, assessmentType aType) {
         this.assessmentID = assessmentID;
         this.assessmentName = assessmentName;

@@ -4,6 +4,7 @@
  */
 package data;
 
+import business.Assessment;
 import business.Attempt;
 import business.Question;
 import business.QuestionPool;
@@ -722,6 +723,90 @@ public class FeynmanDB {
                 throw e;
             }
         }
+    }
+    
+    public static List<Assessment> getAllAssessments() {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        List<Assessment> as = new ArrayList<>();
+        
+        String query = "SELECT * FROM assessment";
+        try {
+            ps = connection.prepareStatement(query);
+            rs = ps.executeQuery();
+            while(rs.next()) {
+                int assId = rs.getInt("AssID");
+                int assPool = rs.getInt("assPool");
+                int assRetakes = rs.getInt("assRetakes");
+                String assType = rs.getString("AssType");
+                String assName = rs.getString("AssName");
+                Assessment.assessmentType aType = null;
+                aType = Assessment.assessmentType.valueOf(assType);
+                as.add(new Assessment(assId, assName, assPool, assRetakes, aType));
+            }
+            return as;
+        } catch (SQLException e) {
+            LOG.log(Level.SEVERE, "*** SQLException: getAllAssessments", e);
+            System.out.println(e);
+            return null;
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+                pool.freeConnection(connection);
+            } catch (SQLException e) {
+                LOG.log(Level.SEVERE, "*** SQLException: cleaning up getAllQuestions", e);
+                System.out.println(e);
+            }
+        }
+    }
+    
+    public static int addAssessment(Assessment a) {
+        int id = 0;
+        
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        
+        String queryAdd = "INSERT INTO assessment " +
+                          "(AssPool, AssRetakes, AssType, AssName) " +
+                          "(?,?,?,?)";
+        String queryID = "SELECT AssID FROM assessment WHERE AssName = ?";
+        
+        try {
+            ps = connection.prepareStatement(queryAdd);
+            ps.setInt(1, a.getPoolID());
+            ps.setInt(2, a.getRetakes());
+            ps.setString(3, a.getaType().toString());
+            ps.setString(4, a.getAssessmentName());
+            int update = ps.executeUpdate();
+            if (1 > update) { throw new SQLException();}
+            
+            ps = connection.prepareStatement(queryID);
+            ps.setString(1, a.getAssessmentName());
+            rs = ps.executeQuery();
+            while (rs.next()){
+                id = rs.getInt("AssID");
+            }
+        } catch (SQLException e) {
+            LOG.log(Level.SEVERE, "*** SQLException: addAssessment", e);
+            System.out.println(e);
+            return -1;
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+                pool.freeConnection(connection);
+            } catch (SQLException e) {
+                LOG.log(Level.SEVERE, "*** SQLException: cleaning up addAssessment", e);
+                System.out.println(e);
+                return -1;
+            }
+        }
+        return id;
     }
 }
 

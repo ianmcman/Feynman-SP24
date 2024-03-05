@@ -44,12 +44,12 @@ public class TeacherController extends HttpServlet {
             response.sendRedirect("Public");
             return;
         }
-        
+
         if (!user.getRoles().contains("teacher")) {
             response.sendRedirect("Public");
             return;
         }
-        
+
         String url = "/Teacher/index.jsp";
         String action = request.getParameter("action");
         ArrayList<String> errors = new ArrayList();
@@ -57,88 +57,139 @@ public class TeacherController extends HttpServlet {
         ArrayList<String> qTypes = new ArrayList(EnumSet.allOf(Question.questionType.class));
         String rPage = request.getParameter("rPage");
         String rIndex = request.getParameter("rIndex");
-                
+
         if (action == null) {
             action = "default";
         }
 
         switch (action) {
             case "qPHome":
-                
+
                 url = "/Teacher/qPoolIndex.jsp";
                 ArrayList<QuestionPool> qPools = new ArrayList<>(FeynmanDB.getQuestionPoolNames(user.getUserID()));
-                request.setAttribute("pools",qPools);
+                request.setAttribute("pools", qPools);
                 break;
             case "createQuizHome":
                 url = "/Teacher/createQuiz.jsp";
-                break;
-            case "createQuiz":
-                url = "/Teacher/createQuiz.jsp";
+                List<QuestionPool> pools = null;
                 try {
-                    List<QuestionPool> pools = FeynmanDB.getQuestionPoolNames(user.getUserID());
-                    request.setAttribute("pools", pools);
+                    pools = FeynmanDB.getQuestionPoolNames(user.getUserID());
                 } catch (Exception e) {
-                   errors.add("Error receiving pools from database");
+                    errors.add("Error receiving pools from database");
                 }
-                
+                request.setAttribute("pools", pools);
                 List<Assessment.assessmentType> aTypes = new ArrayList<>(Arrays.asList(Assessment.assessmentType.values()));
                 request.setAttribute("aTypes", aTypes);
-                boolean isValid = true;
-                int retakes;
+                break;
+            case "createQuiz":
+                String aName = request.getParameter("name");
                 String retakesString = request.getParameter("retakes");
-                String assessmentType = request.getParameter("aType");
+                int retakes = -1;
+                String infRetakes = request.getParameter("infiniteRetakes");
+                String pChoiceString = request.getParameter("poolChoice");
+                int pChoice = -1;
+                String aTypeString = request.getParameter("aType");
+                Assessment a = null;
+                QuestionPool qp = null;
+                Assessment.assessmentType aType = null;
+
+                if (aName == null || aName.isBlank()) {
+                    errors.add("Assessment name can't be blank or null.");
+                }
+
+                if (infRetakes.equalsIgnoreCase("on")) {
+                    retakes = 10000;
+                }
+
+                if (infRetakes.equalsIgnoreCase("null")) {
+                    if (retakesString == null || retakesString.isBlank()) {
+                        errors.add("Retakes must not be null.");
+                    } else {
+                        try {
+                            retakes = Integer.parseInt(retakesString);
+                        } catch (NumberFormatException e) {
+                            errors.add("Retakes must be a number");
+                        }
+                    }
+                }
+
+                if (retakes < 0) {
+                    errors.add("Retakes must be 0 or greater.");
+                }
+
+                try {
+                    pChoice = Integer.parseInt(pChoiceString);
+                } catch (NumberFormatException e) {
+                    errors.add("Pool choice must have a numeric ID.");
+                }
                 
-                if (retakesString == null || retakesString.isEmpty()) {
-                    errors.add("Retakes must not be null or empty.");
-                    isValid = false;
-                } else {
-                    retakes = Integer.parseInt(retakesString);
-                    if (retakes < 0) {
-                        errors.add("Retakes must not be less than 0");
-                        isValid = false;
+                qp = FeynmanDB.getQuestionPool(pChoice, user.getUserID());
+                if (qp == null) {
+                    errors.add("Invalid question pool ID.");
+                }
+                
+                try {
+                    aType = Assessment.assessmentType.valueOf(aTypeString);
+                } catch (IllegalArgumentException e) {
+                    errors.add("Assessment type can't be custom.");
+                    aTypeString = "";
+                } 
+                
+                if (errors.isEmpty()) {
+                    // add assessment to DB
+                    a = new Assessment();
+                    a.setAssessmentName(aName);
+                    a.setPoolID(pChoice);
+                    a.setRetakes(retakes);
+                    a.setaType(aType);
+                    int id = FeynmanDB.addAssessment(a);
+                    if (id == -1) {
+                        errors.add("There was a problem adding the assessment to the database.");
+                    } else {
+                        a.setAssessmentID(id);
                     }
                 }
                 
-                if (assessmentType == null || assessmentType.isEmpty()) {
-                    errors.add("Assessment type must be chosen.");
-                    isValid = false;
-                }
-                
-                if (isValid) {
-                    message = "Quiz creation successful \n"+retakesString+"\n"+assessmentType;
+                if (!(errors.isEmpty())) {
+                    request.setAttribute("name", aName);
+                    request.setAttribute("retakes", retakesString);
                     
-                } else {
-                    message = "Quiz creation unsuccessful";
                 }
-                
+
                 break;
             case "addQuestion":
                 url = "/Teacher/createQuestion.jsp";
-                request.setAttribute("rPage",rPage);
-                request.setAttribute("rIndex",rIndex);
-                request.setAttribute("qTypes",qTypes);
+                request.setAttribute("rPage", rPage);
+                request.setAttribute("rIndex", rIndex);
+                request.setAttribute("qTypes", qTypes);
                 break;
             case "addQPool":
                 url = "/Teacher/createQPool.jsp";
-                request.setAttribute("rPage",rPage);
-                request.setAttribute("rIndex",rIndex);
+                request.setAttribute("rPage", rPage);
+                request.setAttribute("rIndex", rIndex);
                 break;
             case "editQPool":
                 url = "/Teacher/editQPool.jsp";
                 request.setAttribute("rPage", rPage);
-                request.setAttribute("rIndex",rIndex);
+                request.setAttribute("rIndex", rIndex);
                 String edit = request.getParameter("edit");
-                if(null==edit){edit="";}
-                if(!rIndex.isBlank()){
+                if (null == edit) {
+                    edit = "";
+                }
+                if (!rIndex.isBlank()) {
                     int ID = Integer.parseInt(rIndex);
-                    QuestionPool qp = FeynmanDB.getQuestionPool(ID,user.getUserID());
-                    switch(edit){
+                    QuestionPool qp = FeynmanDB.getQuestionPool(ID, user.getUserID());
+                    switch (edit) {
                         case "rename":
                             String name = request.getParameter("qPName");
-                            if(name.isBlank()){errors.add("Question Pool must have a name");}
-                            else{qp.setName(name);
+                            if (name.isBlank()) {
+                                errors.add("Question Pool must have a name");
+                            } else {
+                                qp.setName(name);
                                 int e = FeynmanDB.renameQuestionPool(qp.getID(), name);
-                                if(e<1){errors.add("Question Pool failed to rename");}
+                                if (e < 1) {
+                                    errors.add("Question Pool failed to rename");
+                                }
                             }
                             break;
                         case "addQ":
@@ -150,8 +201,8 @@ public class TeacherController extends HttpServlet {
                         default:
                             break;
                     }
-                    
-                    request.setAttribute("qp",qp);
+
+                    request.setAttribute("qp", qp);
                 }
                 break;
             case "createQuestion":
@@ -162,51 +213,63 @@ public class TeacherController extends HttpServlet {
                 int qDiff = 0;
                 String rawqType = request.getParameter("qType");
                 Question.questionType qType = null;
-                if(qText.isBlank()){errors.add("Question text can't be blank.");}
-                if(qAnswer.isBlank()){errors.add("Answer can't be blank.");}
-                if(rawqDiff.isBlank()){errors.add("Difficulty can't be blank.");}
-                else {
+                if (qText.isBlank()) {
+                    errors.add("Question text can't be blank.");
+                }
+                if (qAnswer.isBlank()) {
+                    errors.add("Answer can't be blank.");
+                }
+                if (rawqDiff.isBlank()) {
+                    errors.add("Difficulty can't be blank.");
+                } else {
                     try {
                         qDiff = Integer.parseInt(rawqDiff);
-                        if(1>qDiff||5<qDiff){throw new Exception();}
-                    }catch(Exception e){
+                        if (1 > qDiff || 5 < qDiff) {
+                            throw new Exception();
+                        }
+                    } catch (Exception e) {
                         errors.add("Difficulty must be a number between 1 and 5 inclusive.");
                     }
                 }
-                try{
+                try {
                     qType = Question.questionType.valueOf(rawqType);
-                }catch (IllegalArgumentException e){
+                } catch (IllegalArgumentException e) {
                     errors.add("Question type can't be custom.");
-                    rawqType="";
+                    rawqType = "";
                 }
-                if(errors.isEmpty()){
+                if (errors.isEmpty()) {
                     //add question to DB
-                    q = new Question(-1,qText,qAnswer,qType,qDiff);
+                    q = new Question(-1, qText, qAnswer, qType, qDiff);
                     int id = FeynmanDB.addQuestion(q);
-                    if(id == -1){errors.add("There was a problem with adding the question to the database.");}
-                    else{q.setID(id);}
+                    if (id == -1) {
+                        errors.add("There was a pro`blem with adding the question to the database.");
+                    } else {
+                        q.setID(id);
+                    }
                 }
-                if(!(errors.isEmpty())){
+                if (!(errors.isEmpty())) {
                     //return to question form
-                    request.setAttribute("qText",qText);
-                    request.setAttribute("qAnswer",qAnswer);
-                    request.setAttribute("qDiff",rawqDiff);
-                    request.setAttribute("qType",rawqType);
-                    request.setAttribute("qTypes",qTypes);
+                    request.setAttribute("qText", qText);
+                    request.setAttribute("qAnswer", qAnswer);
+                    request.setAttribute("qDiff", rawqDiff);
+                    request.setAttribute("qType", rawqType);
+                    request.setAttribute("qTypes", qTypes);
                     url = "/Teacher/createQuestion.jsp";
-                    request.setAttribute("rPage",rPage);
-                    request.setAttribute("rIndex",rIndex);
-                }else{
-                    switch(rPage){
+                    request.setAttribute("rPage", rPage);
+                    request.setAttribute("rIndex", rIndex);
+                } else {
+                    switch (rPage) {
                         case "editQP":
                             url = "/Teacher/editQPool.jsp";
                             request.setAttribute("rPage", rPage);
-                            request.setAttribute("rIndex",rIndex);
+                            request.setAttribute("rIndex", rIndex);
                             int qpID = Integer.parseInt(rIndex);
-                            if(q != null && q.getID() != -1){FeynmanDB.addQuestionToPool(q.getID(),qpID);}
+                            if (q != null && q.getID() != -1) {
+                                FeynmanDB.addQuestionToPool(q.getID(), qpID);
+                            }
                             QuestionPool qp = FeynmanDB.getQuestionPool(qpID, user.getUserID());
-                            request.setAttribute("qp",qp);
-                            
+                            request.setAttribute("qp", qp);
+
                             break;
                         case "index":
                         default:
@@ -216,36 +279,39 @@ public class TeacherController extends HttpServlet {
                 break;
             case "createQPool":
                 String qPName = request.getParameter("qPName");
-                if(qPName.isBlank()){errors.add("Question Pool Name can't be blank.");}
-                if(errors.isEmpty()){
+                if (qPName.isBlank()) {
+                    errors.add("Question Pool Name can't be blank.");
+                }
+                if (errors.isEmpty()) {
                     //Add Question Pool to DB
                     QuestionPool pool = new QuestionPool(qPName);
                     int id = FeynmanDB.addQuestionPool(pool, user.getUserID());
-                    if(id == -1){errors.add("There was a problem with adding the question pool to the database.");}
-                    else{pool.setID(id);}                    
+                    if (id == -1) {
+                        errors.add("There was a problem with adding the question pool to the database.");
+                    } else {
+                        pool.setID(id);
+                    }
                 }
-                if(!errors.isEmpty()){
+                if (!errors.isEmpty()) {
                     //Return to add Question Pool
                     url = "/Teacher/createQPool.jsp";
-                    request.setAttribute("rPage",rPage);
-                    request.setAttribute("rIndex",rIndex);
+                    request.setAttribute("rPage", rPage);
+                    request.setAttribute("rIndex", rIndex);
                     request.setAttribute("qPName", qPName);
-                }
-                else{
-                    switch(rPage){
+                } else {
+                    switch (rPage) {
                         case "index":
                         default:
                             url = "/Teacher/qPoolIndex.jsp";
                             qPools = new ArrayList<>(FeynmanDB.getQuestionPoolNames(user.getUserID()));
-                            request.setAttribute("pools",qPools);
+                            request.setAttribute("pools", qPools);
                     }
                 }
                 break;
-            default: 
+            default:
                 break;
         }
-        
-        
+
         request.setAttribute("message", message);
         request.setAttribute("errors", errors);
 

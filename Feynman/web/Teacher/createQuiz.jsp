@@ -43,7 +43,7 @@
             <label for="retakes">Retakes:</label>
             <input id="retakes" type="number" name="retakes" min="0" value="0">
             <label for="infiniteRetakes">Infinite Retakes?</label>
-            <input id="infiniteRetakes" type="checkbox" name="infiniteRetakes" 
+            <input id="infiniteRetakes" type="checkbox" name="infiniteRetakes"
                    onclick="document.getElementById('retakes').disabled=this.checked;"/>                   
             <br><br>
             <label for id="poolChoice">Question Pool for this Assessment:</label>

@@ -1,6 +1,7 @@
 package controllers;
 
 import business.User;
+import business.Validation;
 import data.FeynmanDB;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -110,14 +111,16 @@ public class Public extends HttpServlet {
         String lastName = request.getParameter("lastName");
         ArrayList<String> roles = new ArrayList<String>(Arrays.asList(request.getParameterValues("roles")));
         User user = new User(username, password, firstName, lastName, roles);
-        
+        String message = null;
         try {
+            message += Validation.validateUserNameUnique(user.getUsername());
+            message += Validation.validateUserName(user.getUsername());
             FeynmanDB.registerUser(user);
             request.setAttribute("username", username);
             request.setAttribute("password", password);
             loginUser(request, response);
         } catch (SQLException e) {
-            String message = "Registration Unsuccessful";
+            message += "Registration Unsuccessful";
             request.setAttribute("message", message);
             request.getRequestDispatcher("/register.jsp").forward(request, response);
         }

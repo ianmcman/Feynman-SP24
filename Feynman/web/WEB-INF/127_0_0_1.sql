@@ -35,7 +35,8 @@ CREATE TABLE `assessment` (
   `AssRandom` tinyint(1) NOT NULL,
   `AssLength` int(11) NOT NULL,
   `AssRetakes` int(11) NOT NULL,
-  `AssType` text NOT NULL
+  `AssType` text NOT NULL,
+  `AssName` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
