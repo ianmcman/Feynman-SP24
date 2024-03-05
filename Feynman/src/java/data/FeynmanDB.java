@@ -76,6 +76,7 @@ public class FeynmanDB {
         }
     }
     
+
     public static ArrayList<User> getAllUsers() throws SQLException {
         ConnectionPool pool = ConnectionPool.getInstance();
         ArrayList<User> users = new ArrayList<>();
@@ -101,7 +102,7 @@ public class FeynmanDB {
                 try (PreparedStatement ps = connection.prepareStatement(query2)) {
                     ps.setInt(1, userID);
                     try (ResultSet rolesRs = ps.executeQuery()) {
-                        while (rs.next()) {
+                        while (rolesRs.next()) {
                             roles.add(rolesRs.getString("RoleName"));
                         }
                     }
