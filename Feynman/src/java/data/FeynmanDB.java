@@ -152,8 +152,22 @@ public class FeynmanDB {
             }
         }
         return user;       
+    }    
+    
+    public static int deleteUser(int userID) throws SQLException {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        User user = null;
+        
+        String query = "DELETE FROM user WHERE UserID = ?";
+        
+ 
+        try (Connection connection = pool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, userID);
+            return ps.executeUpdate();
+        }     
     }   
-
+    
     // Modify!! add a load questions into question pool function, then split get Question Pools into a get names, and get full
     public static List<QuestionPool> getQuestionPools(int userID){
         ConnectionPool pool = ConnectionPool.getInstance();
