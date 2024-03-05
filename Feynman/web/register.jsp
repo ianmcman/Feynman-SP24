@@ -28,6 +28,16 @@
                         <td>Password</td>
                         <td><input type="password" name="password" /></td>
                     </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" value="parent" name="roles" />
+                            <label for="parent">Parent</label>
+                        </td>
+                        <td>
+                            <input type="checkbox" value="student" name="roles" />
+                            <label for="student">Student</label>
+                        </td>
+                    </tr>
                 </table>
                 <input type="submit" value="Submit" />
             </form>

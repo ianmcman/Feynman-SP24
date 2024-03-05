@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
@@ -111,15 +112,14 @@ public class Public extends HttpServlet {
         String password = request.getParameter("password");
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
-        User user = new User(username, password, firstName, lastName);
+        ArrayList<String> roles = new ArrayList<String>(Arrays.asList(request.getParameterValues("roles")));
+        User user = new User(username, password, firstName, lastName, roles);
         
         try {
-            int rowsAffected = FeynmanDB.registerUser(user);
-            if (rowsAffected == 1) {
-                request.setAttribute("username", username);
-                request.setAttribute("password", password);
-                loginUser(request, response);
-            }
+            FeynmanDB.registerUser(user);
+            request.setAttribute("username", username);
+            request.setAttribute("password", password);
+            loginUser(request, response);
         } catch (SQLException e) {
             String message = "Registration Unsuccessful";
             request.setAttribute("message", message);

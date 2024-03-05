@@ -29,19 +29,23 @@
             <form action="Admin" method="post">
                 <input type="hidden" name="action" value="update">  
                 
-                <input type="checkbox" id="admin" name="roles" <c:if test="${user.roles.contains('admin')}">checked</c:if> />
+                <div>
+                    <input type="checkbox" id="admin" name="roles" <c:if test="${user.roles.contains('admin')}">checked</c:if> />
                     <label for="admin">Admin</label>
                 </div>
 
-                <input type="checkbox" id="student" name="roles" <c:if test="${user.roles.contains('student')}">checked</c:if> />
+                <div>
+                    <input type="checkbox" id="student" name="roles" <c:if test="${user.roles.contains('student')}">checked</c:if> />
                     <label for="student">Student</label>
                 </div>
                 
-                <input type="checkbox" id="teacher" name="roles" <c:if test="${user.roles.contains('teacher')}">checked</c:if> />
+                <div>
+                    <input type="checkbox" id="teacher" name="roles" <c:if test="${user.roles.contains('teacher')}">checked</c:if> />
                     <label for="teacher">Teacher</label>
                 </div>
                 
-                <input type="checkbox" id="parent" name="roles" <c:if test="${user.roles.contains('parent')}">checked</c:if> />
+                <div>
+                    <input type="checkbox" id="parent" name="roles" <c:if test="${user.roles.contains('parent')}">checked</c:if> />
                     <label for="parent">Parent</label>
                 </div>
                 <input type="submit" value="Update"><br>

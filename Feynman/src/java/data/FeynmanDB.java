@@ -55,25 +55,60 @@ public class FeynmanDB {
 
     }   
     
-    public static int registerUser(User user) throws SQLException {
+    public static void registerUser(User user) throws SQLException {
         ConnectionPool pool = ConnectionPool.getInstance();
 
         String query
                 = "INSERT INTO user (FirstName, LastName, Username, Password) "
                 + "VALUES (?, ?, ?, ?)";
+        String query2
+                = "INSERT INTO userroles (UserID, RoleID) "
+                + "VALUES (?, ?)";
         
         try (Connection connection = pool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(query)) {
-            ps.setString(1, user.getFirstName());
-            ps.setString(2, user.getLastName());
-            ps.setString(3, user.getUsername());
-            ps.setString(4, user.getPassword());
-
-
-
-            return ps.executeUpdate();
-        
+             PreparedStatement ps1 = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+             PreparedStatement ps2 = connection.prepareStatement(query2)) {
+            
+            // Start transaction
+            connection.setAutoCommit(false);
+            
+            // Insert the user
+            ps1.setString(1, user.getFirstName());
+            ps1.setString(2, user.getLastName());
+            ps1.setString(3, user.getUsername());
+            ps1.setString(4, user.getPassword());
+            int affectedRows = ps1.executeUpdate();
+            
+            if  (affectedRows == 0) {
+                throw new SQLException("Creating user failed, no rows affected.");
+            }
+            
+            int userID;
+            try (ResultSet generatedKeys = ps1.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    userID = generatedKeys.getInt(1);
+                } else {
+                    throw new SQLException("Creating user failed, no ID obtained.");
+                }
+            }
+                
+   
+            // Insert each user role
+            for (String role : user.getRoles()) {
+                if (role.equals("parent")) {
+                    ps2.setInt(2, 4);
+                } else if (role.equals("student")) {
+                    ps2.setInt(2, 3);
+                }
+                ps2.setInt(1, userID);
+                ps2.executeUpdate();
+            }
+   
+            
+            // Commit transaction
+            connection.commit();
         }
+
     }
     
 
