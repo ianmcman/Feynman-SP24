@@ -115,6 +115,43 @@ public class FeynmanDB {
         return users;
 
     }   
+    
+    public static User getUser(int userID) throws SQLException {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        User user = null;
+        
+        String query1 = "SELECT * FROM user \n WHERE UserID = ?";
+        String query2 = """
+                        SELECT RoleName FROM userroles 
+                        JOIN roles 
+                        ON userroles.RoleID = roles.RoleID 
+                        WHERE UserID = ?""";
+        
+ 
+        try (Connection connection = pool.getConnection();
+             PreparedStatement ps1 = connection.prepareStatement(query1)) {
+            ps1.setInt(1, userID);
+            try (ResultSet userRs = ps1.executeQuery()) {
+                if (userRs.next()) {
+                    String username = userRs.getString("Username");
+                    String firstName = userRs.getString("FirstName");
+                    String lastName = userRs.getString("LastName");
+                    ArrayList<String> roles = new ArrayList<>();
+                    try (PreparedStatement ps2 = connection.prepareStatement(query2)) {
+                        ps2.setInt(1, userID);
+                        try (ResultSet rolesRs = ps2.executeQuery()) {
+                            while (rolesRs.next()) {
+                                roles.add(rolesRs.getString("RoleName"));
+                            }
+                        }
+                    }
+                    user = new User(userID, username, roles, firstName, lastName);
+                }
+                
+            }
+        }
+        return user;       
+    }   
 
     // Modify!! add a load questions into question pool function, then split get Question Pools into a get names, and get full
     public static List<QuestionPool> getQuestionPools(int userID){
