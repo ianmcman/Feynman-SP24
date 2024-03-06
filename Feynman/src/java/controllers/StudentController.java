@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controllers;
 
 import business.Attempt;
@@ -18,10 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 
-/**
- *
- * @author im757299
- */
 public class StudentController extends HttpServlet {
 
     /**
@@ -35,6 +27,7 @@ public class StudentController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
         if (!isStudent(request, response)) {
             response.sendRedirect("Public");
             return;
@@ -42,6 +35,7 @@ public class StudentController extends HttpServlet {
         
         String url = "/Student/index.jsp";
         String action = request.getParameter("action");
+        User loggedInUser = (User) request.getSession().getAttribute("user");
         
         ArrayList<String> errors = new ArrayList();
         String message = "";
@@ -53,7 +47,7 @@ public class StudentController extends HttpServlet {
         switch (action) {
             case "studentAttempts":
                 url = "/Student/studentAttempts.jsp";
-                List<Attempt> studentAttempts = FeynmanDB.getStudentAttempts(1);//temp value still need to be modified
+                List<Attempt> studentAttempts = FeynmanDB.getStudentAttempts(loggedInUser.getUserID());
                 request.setAttribute("studentAttempts", studentAttempts);
             default:
                 break;

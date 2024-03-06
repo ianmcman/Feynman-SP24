@@ -26,11 +26,11 @@ public class FeynmanDB {
         ConnectionPool pool = ConnectionPool.getInstance();
         User user = null;
 
-        String query = "SELECT * FROM user \n"
-                + "LEFT JOIN userroles \n"
-                + "	ON user.UserID = userroles.UserID \n"
-                + "LEFT JOIN roles \n"
-                + "	on userroles.RoleID = roles.RoleID \n"
+        String query = "SELECT * FROM user "
+                + "LEFT JOIN userroles "
+                + "	ON user.UserID = userroles.UserID "
+                + "LEFT JOIN roles "
+                + "	on userroles.RoleID = roles.RoleID "
                 + "WHERE Username = ? AND Password = ?";
 
         try (Connection connection = pool.getConnection(); PreparedStatement ps = connection.prepareStatement(query)) {
@@ -174,7 +174,7 @@ public class FeynmanDB {
         ConnectionPool pool = ConnectionPool.getInstance();
         ArrayList<User> users = new ArrayList<>();
 
-        String query1 = "SELECT * FROM user \n";
+        String query1 = "SELECT * FROM user ";
         String query2 = """
                         SELECT RoleName FROM userroles 
                         JOIN roles 
@@ -211,7 +211,7 @@ public class FeynmanDB {
         ConnectionPool pool = ConnectionPool.getInstance();
         User user = null;
 
-        String query1 = "SELECT * FROM user \n WHERE UserID = ?";
+        String query1 = "SELECT * FROM user  WHERE UserID = ?";
         String query2 = """
                         SELECT RoleName FROM userroles 
                         JOIN roles 
@@ -719,10 +719,13 @@ public class FeynmanDB {
         Attempt attempt = null;
         Question question = null;
 
-        String query = "SELECT userID, attemptID FROM assessmentattempts AS aa"
-                + "JOIN assessmentattemptquestions AS aaq ON aa.attemptID = aaq.attemptID"
-                + "JOIN question as q ON aaq.QID = q.QID"
-                + "WHERE userID = ?"; //need to do query
+        String query = "SELECT `assessmentattempts`.*, `assessmentattemptquestions`.*, `question`.*" +
+                       "FROM `assessmentattempts`" +
+                       "LEFT JOIN `assessmentattemptquestions` " +
+                       "	ON `assessmentattemptquestions`.`attemptID` = `assessmentattempts`.`attemptID`" +
+                       "INNER JOIN `question` " +
+                       "	ON `assessmentattemptquestions`.`QID` = `question`.`QID`" +
+                       "WHERE `assessmentattempts`.`userID` = '?'";
 
         List<Attempt> studentAttempts = new ArrayList<>();
 
