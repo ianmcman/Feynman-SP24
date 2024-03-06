@@ -1,5 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page import="business.User"%>
 
 <!DOCTYPE html>
 <html>
@@ -8,20 +9,7 @@
         <title>Adding a Question</title>
     </head>
     <body>
-        <nav>
-        <c:choose>
-            <c:when test = "${sessionScope.user == null}"> 
-                <a href="<c:url value='Public?action=login' />"> Login</a> |    
-            </c:when>
-            <c:when test = "${sessionScope.user != null}"> 
-                <a href="<c:url value='Private?action=logout' />"> Logout</a> |    
-            </c:when>
-        </c:choose>
-            <a href="<c:url value='Public?action=register' />">Register</a> | 
-            <a href="<c:url value='Private?action=dashboard' />">Dashboard</a> |
-            <a href="<c:url value='Teacher' />">Teachers</a> |
-            <a href="<c:url value='Student' />">Student</a>
-        </nav>
+        <c:import url="/nav.jsp" />
         <h1>New Question: </h1>
         <form action="<c:url value='Teacher?action=createQuestion' />" method="post">
             <input type="hidden" value="<c:out value='${rPage}'/>" name="rPage" />
