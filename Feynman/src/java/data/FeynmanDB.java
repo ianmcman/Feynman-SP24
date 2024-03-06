@@ -11,6 +11,7 @@ import business.QuestionPool;
 import business.Student;
 import business.User;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -716,23 +717,13 @@ public class FeynmanDB {
         Connection connection = pool.getConnection();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        Attempt attempt = null;
-        Attempt prevAttempt = null;
-        Question question = null;
-
-//        String query = "SELECT `assessmentattempts`.*, `assessmentattemptquestions`.*, `question`.*" +
-//                       "FROM `assessmentattempts`" +
-//                       "LEFT JOIN `assessmentattemptquestions` " +
-//                       "	ON `assessmentattemptquestions`.`attemptID` = `assessmentattempts`.`attemptID`" +
-//                       "INNER JOIN `question` " +
-//                       "	ON `assessmentattemptquestions`.`QID` = `question`.`QID`" +
-//                       "WHERE `assessmentattempts`.`userID` = '?'";
         
         
-        String query = "SELECT userID, attemptID FROM assessmentattempts AS aa"
-                + "JOIN assessmentattemptquestions AS aaq ON aa.attemptID = aaq.attemptID"
-                + "JOIN question as q ON aaq.QID = q.QID"
-                + "WHERE userID = ?"; //need to do query
+        String query = "SELECT aa.userID, aaq.attemptID, q.QID, aa.attemptTimestamp, q.QFormula, q.QAnswer, q.QDifficulty, q.QInclMult, q.QInclDiv, q.QInclAdd, q.QInclSub" +
+                "FROM assessmentattempts AS aa " +
+                "JOIN assessmentattemptquestions AS aaq ON aa.attemptID = aaq.attemptID " +
+                "JOIN question as q ON aaq.QID = q.QID " +
+                "WHERE userID = 3;";
 
         List<Attempt> studentAttempts = new ArrayList<>();
 
@@ -745,36 +736,57 @@ public class FeynmanDB {
             rs = ps.executeQuery();
             while (rs.next()) {
                 //need to get: attemptID, studentID, attemptScore, attemptdate, inccorectQuestions, correctQuestions set to Attempt class; then added to list
-                attempt.setStudentID(rs.getInt("userID"));
-                attempt.setAttemptID(rs.getInt("attemptID"));
+                int studentID = rs.getInt("userID");
+                int attemptID = rs.getInt("attemptID");
+                
+                Timestamp stamp = rs.getTimestamp("attemptTimestamp");
+                LocalDateTime date = stamp.toLocalDateTime();
 
-                //question.setQuestionID(rs.getInt("QID"));
-                question.setQuestionText(rs.getString("QFormula"));
-                question.setAnswer(rs.getString("QAnswer"));
-                //question.setqType();
-                question.setDifficulty(rs.getInt("QDifficulty"));
-                if (rs.getInt("correctAnswer") == 1) {
+                int QID = rs.getInt("QID");
+                String formula = rs.getString("QFormula");
+                String answer = rs.getString("QAnswer");
+                
+                int difficulty = rs.getInt("QDifficulty");
+                
+                Boolean qMult = rs.getBoolean("QInclMult");
+                Boolean qDiv = rs.getBoolean("QInclDiv");
+                Boolean qAdd = rs.getBoolean("QInclAdd");
+                Boolean qSub = rs.getBoolean("QInclSub");
+                Question.questionType qType = null;
+                if (qDiv) {
+                    qType = Question.questionType.DIVISION;
+                } else if (qMult) {
+                    qType = Question.questionType.MULTIPLICATION;
+                } else if (qSub) {
+                    qType = Question.questionType.SUBTRACTION;
+                } else if (qAdd) {
+                    qType = Question.questionType.ADDITION;
+                }
+                
+                Question question = new Question(QID, formula, answer, qType, difficulty);
+                
+                if (rs.getBoolean("correctAnswer")) {
                     correctQuestions.add(question);
                 } else {
                     incorrectQuestions.add(question);
                 }
-                attempt.setCorrectQuestions(correctQuestions);
-                attempt.setIncorrectQuestions(incorrectQuestions);
+
+                double score = correctQuestions.size() / (correctQuestions.size() + incorrectQuestions.size());
+                Attempt attempt = new Attempt(attemptID, studentID, score, date, incorrectQuestions, correctQuestions);
                 studentAttempts.add(attempt);
-                
-                
             }
             return studentAttempts;
 
         } catch (SQLException e) {
             System.out.println(e);
+            System.out.println("test error for rs.next()");
             return null;
         } finally {
             try {
                 rs.close();
                 ps.close();
                 pool.freeConnection(connection);
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 LOG.log(Level.SEVERE, "*** select all null pointer?", e);
             }
         }

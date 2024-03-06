@@ -19,14 +19,14 @@
     </head>
     <body>
         <c:import url="/nav.jsp" />
-        <h1>Assessment results for {student)</h1>
+        <h1>Assessment results</h1>
         <ul>
             <c:forEach items="${studentAttempts}" var="attempt">
                 <li>
                     Attempt ID: ${attempt.attemptID} |
                     Score: ${attempt.attemptScore * 100}% |
                     Date: ${attempt.attemptDate} 
-                </li>
+                </li>             
             </c:forEach>
         </ul>
     </body>

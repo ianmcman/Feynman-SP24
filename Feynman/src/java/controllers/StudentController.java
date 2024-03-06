@@ -48,6 +48,7 @@ public class StudentController extends HttpServlet {
             case "studentAttempts":
                 url = "/Student/studentAttempts.jsp";
                 List<Attempt> studentAttempts = FeynmanDB.getStudentAttempts(loggedInUser.getUserID());
+                System.out.println(studentAttempts);
                 request.setAttribute("studentAttempts", studentAttempts);
             default:
                 break;
