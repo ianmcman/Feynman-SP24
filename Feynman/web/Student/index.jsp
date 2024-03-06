@@ -1,10 +1,5 @@
-<%-- 
-    Document   : studentIndex
-    Created on : Feb 28, 2024, 2:03:32 PM
-    Author     : mh749813
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
     <head>

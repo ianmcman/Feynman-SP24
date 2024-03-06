@@ -1,10 +1,5 @@
-<%-- 
-    Document   : StudentResults
-    Created on : Feb 21, 2024, 2:32:54 PM
-    Author     : mh749813
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
     <head>
