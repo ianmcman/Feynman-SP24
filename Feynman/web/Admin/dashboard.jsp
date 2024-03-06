@@ -8,18 +8,7 @@
         <title>Admin Dashboard</title>
     </head>
     <body>
-        <nav>
-        <c:choose>
-            <c:when test = "${sessionScope.user == null}"> 
-                <a href="<c:url value='Public?action=login' />"> Login</a> |   
-                <a href="<c:url value='Public?action=register' />">Register</a> | 
-            </c:when>
-            <c:when test = "${sessionScope.user != null}"> 
-                <a href="<c:url value='Private?action=logout' />"> Logout</a> |  
-                <a href="<c:url value='Private?action=dashboard' />">Dashboard</a>
-            </c:when>
-        </c:choose>
-        </nav>
+        <c:import url="/nav.jsp" />
         <table>
             <tr>
                 <th>UserID</th>
@@ -34,7 +23,7 @@
                 <td>${localUser.username}</td>
                 <td>${localUser.firstName}</td>
                 <td>${localUser.lastName}</td>
-                <td>${localUser.roles}</td>
+                <td>${String.join(", ", localUser.roles)}</td>
                 <td>
                     <form action="Admin" method="get">
                         <input type="hidden" name="action" value="edit" />

@@ -8,18 +8,7 @@
         <title>Admin Dashboard</title>
     </head>
     <body>
-        <nav>
-        <c:choose>
-            <c:when test = "${sessionScope.user == null}"> 
-                <a href="<c:url value='Public?action=login' />"> Login</a> |   
-                <a href="<c:url value='Public?action=register' />">Register</a> | 
-            </c:when>
-            <c:when test = "${sessionScope.user != null}"> 
-                <a href="<c:url value='Private?action=logout' />"> Logout</a> |  
-                <a href="<c:url value='Private?action=dashboard' />">Dashboard</a>
-            </c:when>
-        </c:choose>
-        </nav>
+        <c:import url="/nav.jsp" />
         <h2>User Information Edit</h2>
             
         <fieldset>
