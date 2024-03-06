@@ -91,6 +91,10 @@ public class TeacherController extends HttpServlet {
                 String aTypeString = request.getParameter("aType");
                 Assessment a = null;
                 Assessment.assessmentType aType = null;
+                String randomString = request.getParameter("random");
+                boolean random = false;
+                String lengthString = request.getParameter("length");
+                int length = -1;
 
                 if (aName == null || aName.isBlank()) {
                     errors.add("Assessment name can't be blank or null.");
@@ -112,6 +116,25 @@ public class TeacherController extends HttpServlet {
                             errors.add("Retakes must be a number");
                         }
                     }
+                }
+
+                if (randomString != null) {
+                    if (randomString.equalsIgnoreCase("on")) {
+                        random = true;
+                    }
+                    if (lengthString == null || lengthString.isBlank()) {
+                        errors.add("Length must not be null.");
+                    } else {
+                        try {
+                            length = Integer.parseInt(lengthString);
+                        } catch (NumberFormatException e) {
+                            errors.add("Length must be a number.");
+                        }
+                    }
+                }
+
+                if (length < 1) {
+                    errors.add("Length must be 1 or greater.");
                 }
 
                 if (retakes < 0) {
@@ -142,6 +165,8 @@ public class TeacherController extends HttpServlet {
                     a.setPoolID(pChoice);
                     a.setRetakes(retakes);
                     a.setaType(aType);
+                    a.setIsRandom(random);
+                    a.setLength(length);
                     int id = FeynmanDB.addAssessment(a);
                     if (id == -1) {
                         errors.add("There was a problem adding the assessment to the database.");
@@ -152,8 +177,10 @@ public class TeacherController extends HttpServlet {
                 }
 
                 if (!(errors.isEmpty())) {
+                    url = "/Teacher/createQuiz.jsp";
                     request.setAttribute("name", aName);
                     request.setAttribute("retakes", retakesString);
+                    
 
                 }
 

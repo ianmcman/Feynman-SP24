@@ -846,8 +846,8 @@ public class FeynmanDB {
         ResultSet rs = null;
 
         String queryAdd = "INSERT INTO assessment "
-                + "(PoolID, AssRetakes, AssType, AssName) "
-                + "VALUES(?,?,?,?)";
+                + "(PoolID, AssRetakes, AssType, AssName, AssLength, AssRandom) "
+                + "VALUES(?,?,?,?,?,?)";
         String queryID = "SELECT AssID FROM assessment WHERE AssName = ?";
 
         try {
@@ -856,6 +856,8 @@ public class FeynmanDB {
             ps.setInt(2, a.getRetakes());
             ps.setString(3, a.getaType().toString());
             ps.setString(4, a.getAssessmentName());
+            ps.setInt(5, a.getLength());
+            ps.setBoolean(6, a.isIsRandom());
             int update = ps.executeUpdate();
             if (1 > update) {
                 throw new SQLException();

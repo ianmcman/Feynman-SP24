@@ -22,19 +22,6 @@
             <input type="hidden" name="action" value="createQuiz"/>
             <label for="name">Assessment Name:</label>
             <input id="name" name="name"/> <br><br>
-            <label for="retakes">Retakes:</label>
-            <input id="retakes" type="number" name="retakes" min="0" value="0">
-            <label for="infiniteRetakes">Infinite Retakes?</label>
-            <input id="infiniteRetakes" type="checkbox" name="infiniteRetakes"
-                   onclick="document.getElementById('retakes').disabled=this.checked;"/>                   
-            <br><br>
-            <label for id="poolChoice">Question Pool for this Assessment:</label>
-            <select name="poolChoice" id="poolChoice">
-                <c:forEach items="${pools}" var="pool">
-                    <option value="${pool.ID}">${pool.name}</option>
-                </c:forEach>
-            </select><br><br>
-            
             <label for id="aType">Assessment Type:</label>
             <select name="aType" id="aType">
                 <c:forEach items="${aTypes}" var="type">
@@ -42,8 +29,24 @@
                             <c:if test="${aType == type}">selected</c:if>>
                                 ${type}</option>
                 </c:forEach>
-            </select>
-            
+            </select><br><br>
+            <label for id="poolChoice">Question Pool for this Assessment:</label>
+            <select name="poolChoice" id="poolChoice">
+                <c:forEach items="${pools}" var="pool">
+                    <option value="${pool.ID}">${pool.name}</option>
+                </c:forEach>
+            </select><br><br>
+            <label for="infiniteRetakes">Infinite Retakes?</label>
+            <input id="infiniteRetakes" type="checkbox" name="infiniteRetakes"
+                   onclick="document.getElementById('retakes').disabled=this.checked;"/>                   
+            <label for="retakes">Retakes:</label>
+            <input id="retakes" type="number" name="retakes" min="0" value="0">
+            <br><br>            
+            <label for="random">Random Questions from Pool?</label>
+            <input id="random" type="checkbox" name="random"
+                   onclick="document.getElementById('length').disabled=!this.checked;"/>                   
+            <label for="length">Length</label>
+            <input id="length" type="number" name="length" min="1" value="1">
             <br><br>
             <input type="submit" value="Create Quiz">
         </form>
