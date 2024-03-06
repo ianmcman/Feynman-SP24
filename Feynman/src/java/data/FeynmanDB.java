@@ -846,7 +846,7 @@ public class FeynmanDB {
         ResultSet rs = null;
 
         String queryAdd = "INSERT INTO assessment "
-                + "(AssPool, AssRetakes, AssType, AssName) "
+                + "(PoolID, AssRetakes, AssType, AssName) "
                 + "VALUES(?,?,?,?)";
         String queryID = "SELECT AssID FROM assessment WHERE AssName = ?";
 
