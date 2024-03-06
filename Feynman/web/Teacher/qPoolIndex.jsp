@@ -20,7 +20,7 @@
             <c:otherwise >
                 <c:forEach items="${pools}" var="pool">
                     <h3><c:out value="${pool.getName()}"/></h3>
-                    <a href="<c:url value='Teacher?action=editQPool&rPage=index&rIndex=${pool.getID()}' />">edit</a><br/>
+                    <a href="<c:url value='Teacher?action=editQPool&rPage=index&rIndex=${pool.getID()}' />">Edit</a><br/>
                 </c:forEach>
                     <a href="<c:url value='Teacher?action=addQPool&rPage=index' />"> Add Question Pool</a>
             </c:otherwise >

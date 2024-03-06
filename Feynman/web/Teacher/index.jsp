@@ -13,7 +13,7 @@
         
         <h1>Teacher Home</h1>
         
-        <a href="<c:url value='Teacher?action=qPHome' />"> qPool</a> | 
+        <a href="<c:url value='Teacher?action=qPHome' />"> Question Pools</a> | 
         <a href="<c:url value='Teacher?action=createQuizHome' />"> Create Quiz</a> | 
         <a href="<c:url value='Teacher?action=addQuestion' />"> Add Question </a>
         
