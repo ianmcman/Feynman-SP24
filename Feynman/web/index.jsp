@@ -11,5 +11,6 @@
     </head>
     <body>
         <c:import url="/nav.jsp" />
+        <h1>The Test Center Home Page</h1>
     </body>
 </html>
