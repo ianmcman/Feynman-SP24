@@ -216,7 +216,7 @@ INSERT INTO `user` (`UserID`, `Username`, `Password`, `FirstName`, `LastName`) V
 (1, 'jwalrath21', 'password', 'Jonathan', 'Walrath'),
 (2, 'admin', 'password', 'Admin', 'McAdmin'),
 (3, 'student', 'password', 'Student', 'Studentson'),
-(4, 'parent', 'password', 'Parent', 'Fitzparent')
+(4, 'parent', 'password', 'Parent', 'Fitzparent'),
 (5, 'teacher', 'password', 'Teacher', 'MacTeacher');
 
 -- --------------------------------------------------------
