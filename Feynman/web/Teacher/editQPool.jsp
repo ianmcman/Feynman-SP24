@@ -19,7 +19,6 @@
             <input type="text" value="<c:out value='${qp.getName()}'/>" name="qPName" id="qPName"/><br>
             <input type="submit" value="Rename"/>
         </form>
-            <a href="<c:url value='Teacher?action=addQuestion&rPage=editQP&rIndex=${rIndex}' />"> Add Question to Pool</a>
             <c:choose>
             <c:when test="${qp.getQuestions().isEmpty()}">
                 <h2>There are no questions currently</h2>
@@ -30,9 +29,9 @@
                     <a href="<c:url value='Teacher?action=editQPool&rPage=editQP&rIndex=${rIndex}&edit=removeQ&QID=${q.getID()}' />"> Remove</a>
                     </p>
                 </c:forEach>
-                    <a href="<c:url value='Teacher?action=addQuestion&rPage=editQP&rIndex=${rIndex}' />"> Add Question to Pool</a>
             </c:otherwise >
         </c:choose>
+            <a href="<c:url value='Teacher?action=addQuestion&rPage=editQP&rIndex=${rIndex}' />"> Add Question to Pool (For Testing)</a>        
             <ul>
             <c:forEach items="${errors}" var="error">
         <li>${error}</li>
