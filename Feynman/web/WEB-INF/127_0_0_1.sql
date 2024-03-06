@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 06, 2024 at 06:06 AM
+-- Generation Time: Mar 06, 2024 at 06:54 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -31,7 +31,7 @@ USE `feynman`;
 
 CREATE TABLE `assessment` (
   `AssID` int(11) NOT NULL,
-  `AssPool` int(11) NOT NULL,
+  `PoolID` int(11) DEFAULT NULL,
   `AssRandom` tinyint(1) DEFAULT NULL,
   `AssLength` int(11) DEFAULT NULL,
   `AssRetakes` int(11) NOT NULL,
@@ -43,7 +43,7 @@ CREATE TABLE `assessment` (
 -- Dumping data for table `assessment`
 --
 
-INSERT INTO `assessment` (`AssID`, `AssPool`, `AssRandom`, `AssLength`, `AssRetakes`, `AssType`, `AssName`) VALUES
+INSERT INTO `assessment` (`AssID`, `PoolID`, `AssRandom`, `AssLength`, `AssRetakes`, `AssType`, `AssName`) VALUES
 (2, 2, NULL, NULL, 10000, 'DRILL', 'Simple Addition Drill'),
 (3, 3, NULL, NULL, 0, 'EXAM', 'Simple Subtraction Exam');
 
@@ -305,7 +305,7 @@ INSERT INTO `userroles` (`UserID`, `RoleID`) VALUES
 --
 ALTER TABLE `assessment`
   ADD PRIMARY KEY (`AssID`),
-  ADD KEY `AssPool` (`AssPool`);
+  ADD KEY `AssPool` (`PoolID`);
 
 --
 -- Indexes for table `assessmentattemptquestions`
@@ -458,7 +458,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables
@@ -468,7 +468,7 @@ ALTER TABLE `user`
 -- Constraints for table `assessment`
 --
 ALTER TABLE `assessment`
-  ADD CONSTRAINT `assessment_ibfk_1` FOREIGN KEY (`AssPool`) REFERENCES `pool` (`PoolID`);
+  ADD CONSTRAINT `assessment_ibfk_1` FOREIGN KEY (`PoolID`) REFERENCES `pool` (`PoolID`);
 
 --
 -- Constraints for table `assessmentattemptquestions`
