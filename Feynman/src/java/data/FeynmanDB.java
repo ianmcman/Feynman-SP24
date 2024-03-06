@@ -225,6 +225,7 @@ public class FeynmanDB {
                     String username = userRs.getString("Username");
                     String firstName = userRs.getString("FirstName");
                     String lastName = userRs.getString("LastName");
+                    String password = userRs.getString("Password");
                     ArrayList<String> roles = new ArrayList<>();
                     try (PreparedStatement ps2 = connection.prepareStatement(query2)) {
                         ps2.setInt(1, userID);
@@ -234,7 +235,7 @@ public class FeynmanDB {
                             }
                         }
                     }
-                    user = new User(userID, username, roles, firstName, lastName);
+                    user = new User(userID, username, password, roles, firstName, lastName);
                 }
 
             }

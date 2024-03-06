@@ -31,7 +31,7 @@
                 <label class="pad_top">Username:</label>
                 <input type="text" name="username" value="<c:out value='${userToEdit.username}'/>" readonly><br>
                 <label class="pad_top">Password:</label>
-                <input type="text" name="password"><span>Leave this field blank unless you are changing your password.</span><br>
+                <input type="text" name="password" value="<c:out value='${userToEdit.password}'/>"><br>
                 <label class="pad_top">First Name:</label>
                 <input type="text" name="firstName" value="<c:out value='${userToEdit.firstName}'/>"><br>
                 <label class="pad_top">Last Name:</label>
