@@ -720,13 +720,19 @@ public class FeynmanDB {
         Attempt prevAttempt = null;
         Question question = null;
 
-        String query = "SELECT `assessmentattempts`.*, `assessmentattemptquestions`.*, `question`.*" +
-                       "FROM `assessmentattempts`" +
-                       "LEFT JOIN `assessmentattemptquestions` " +
-                       "	ON `assessmentattemptquestions`.`attemptID` = `assessmentattempts`.`attemptID`" +
-                       "INNER JOIN `question` " +
-                       "	ON `assessmentattemptquestions`.`QID` = `question`.`QID`" +
-                       "WHERE `assessmentattempts`.`userID` = '?'";
+//        String query = "SELECT `assessmentattempts`.*, `assessmentattemptquestions`.*, `question`.*" +
+//                       "FROM `assessmentattempts`" +
+//                       "LEFT JOIN `assessmentattemptquestions` " +
+//                       "	ON `assessmentattemptquestions`.`attemptID` = `assessmentattempts`.`attemptID`" +
+//                       "INNER JOIN `question` " +
+//                       "	ON `assessmentattemptquestions`.`QID` = `question`.`QID`" +
+//                       "WHERE `assessmentattempts`.`userID` = '?'";
+        
+        
+        String query = "SELECT userID, attemptID FROM assessmentattempts AS aa"
+                + "JOIN assessmentattemptquestions AS aaq ON aa.attemptID = aaq.attemptID"
+                + "JOIN question as q ON aaq.QID = q.QID"
+                + "WHERE userID = ?"; //need to do query
 
         List<Attempt> studentAttempts = new ArrayList<>();
 
