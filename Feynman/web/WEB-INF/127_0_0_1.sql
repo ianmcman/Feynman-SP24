@@ -146,6 +146,16 @@ CREATE TABLE `roles` (
   `RoleName` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `roles`
+--
+
+INSERT INTO `roles` (`RoleID`, `RoleName`) VALUES
+(1, 'admin'),
+(2, 'teacher'),
+(3, 'student'),
+(4, 'parent');
+
 -- --------------------------------------------------------
 
 --
@@ -159,6 +169,16 @@ CREATE TABLE `user` (
   `FirstName` varchar(50) NOT NULL,
   `LastName` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`UserID`, `Username`, `Password`, `FirstName`, `LastName`) VALUES
+(1, 'jwalrath21', 'password', 'Jonathan', 'Walrath'),
+(2, 'admin', 'password', 'Admin', 'McAdmin'),
+(3, 'student', 'password', 'Student', 'Studentson'),
+(4, 'parent', 'password', 'Parent', 'Fitzparent');
 
 -- --------------------------------------------------------
 
@@ -214,6 +234,19 @@ CREATE TABLE `userroles` (
   `UserID` int(11) NOT NULL,
   `RoleID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `userroles`
+--
+
+INSERT INTO `userroles` (`UserID`, `RoleID`) VALUES
+(1, 1),
+(1, 2),
+(1, 3),
+(1, 4),
+(2, 1),
+(3, 3),
+(4, 4);
 
 --
 -- Indexes for dumped tables
