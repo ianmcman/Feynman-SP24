@@ -1,11 +1,13 @@
 package controllers;
 
 import business.User;
+import business.Validation;
 import data.FeynmanDB;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -80,19 +82,10 @@ public class Admin extends HttpServlet {
                 int userToEditUserID = Integer.parseInt(request.getParameter("userID"));
                 try {
                     User userToEdit = FeynmanDB.getUser(userToEditUserID);
-                    request.setAttribute("user", userToEdit);
+                    request.setAttribute("userToEdit", userToEdit);
                     url = "/Admin/editUser.jsp";
                     getServletContext().getRequestDispatcher(url).forward(request, response);
-                    String test = getServletContext().getContextPath();
                     return;
-                } catch (SQLException e) {
-                    response.sendRedirect("Private?action=dashboard");
-                    return;
-                }
-            case "delete":
-                int userToDeleteUserID = Integer.parseInt(request.getParameter("userID"));
-                try {
-                    int rowsAffected = FeynmanDB.deleteUser(userToDeleteUserID);
                 } catch (SQLException e) {
                     response.sendRedirect("Private?action=dashboard");
                     return;
@@ -115,10 +108,101 @@ public class Admin extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-                if (!isAdmin(request, response)) {
+        if (!isAdmin(request, response)) {
             response.sendRedirect("Public");
             return;
         }
+        
+        String action = request.getParameter("action");
+        ArrayList<String> errors = new ArrayList<>();
+        String url = new String();
+        
+        if (action == null) {
+            action = "dashboard";
+        }
+        
+        switch (action) {
+            case "delete":
+                int userToDeleteUserID = Integer.parseInt(request.getParameter("userID"));
+                try {
+                    int rowsAffected = FeynmanDB.deleteUser(userToDeleteUserID);
+                    response.sendRedirect("Private?action=dashboard");
+                    return;
+                } catch (SQLException e) {
+                    response.sendRedirect("Private?action=dashboard");
+                    return;
+                }
+            case "edit":
+                int userID;
+                String message = "";
+                boolean isValid = true;
+                
+                String userIDParam = request.getParameter("userID");
+                if (userIDParam != null && !userIDParam.isEmpty()) {
+                    try {
+                        userID = Integer.parseInt(userIDParam);
+                    } catch (NumberFormatException e) {
+                        message = "User Update Unsuccessful. Problem parsing userID.";
+                        request.setAttribute("message", message);
+                        response.sendRedirect("Private");
+                        return;
+                    }
+                } else {
+                    message = "User Update Unsuccessful. No userID passed.";
+                    request.setAttribute("message", message);
+                    response.sendRedirect("Private");
+                    return;
+                }
+                
+                String username = request.getParameter("username");
+                String password = request.getParameter("password");
+                String firstName = request.getParameter("firstName");
+                String lastName = request.getParameter("lastName");
+                
+                ArrayList<String> roles = new ArrayList<>();
+                String[] rolesArray = request.getParameterValues("roles");
+                if (rolesArray != null) {
+                    roles.addAll(Arrays.asList(rolesArray));
+                } else {
+                    message += "User Update Unsuccessful. A user must have at least one role specified.";
+                    isValid = false;
+                }
+
+                
+                if (!isValid) {
+                    try {
+                        User userToEdit = FeynmanDB.getUser(userID);
+                        request.setAttribute("userToEdit", userToEdit);
+                        request.setAttribute("message", message);
+                        url = "/Admin/editUser.jsp";
+                        getServletContext().getRequestDispatcher(url).forward(request, response);
+                        return;
+                    } catch (SQLException e) {
+                        response.sendRedirect("Private?action=dashboard");
+                        return;
+                    }
+                }
+                
+                
+                User user = new User(userID, username, password, roles, firstName, lastName);
+                try {
+                    FeynmanDB.updateUser(user);
+                    response.sendRedirect("Private?action=dashboard");
+                    message = "User Update Successful";
+                    request.setAttribute("message", message);
+                    return;
+                } catch (SQLException e) {
+                    message += "User Update Unsuccessful";
+                    request.setAttribute("message", message);
+                    url = "/Admin/editUser.jsp";
+                    request.getRequestDispatcher(url).forward(request, response);
+                    return;
+                }
+        }
+        
+        request.setAttribute("errors", errors);
+      
+        getServletContext().getRequestDispatcher(url).forward(request, response);
     }
 
     /**

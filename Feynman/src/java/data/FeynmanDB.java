@@ -65,7 +65,9 @@ public class FeynmanDB {
                 = "INSERT INTO userroles (UserID, RoleID) "
                 + "VALUES (?, ?)";
 
-        try (Connection connection = pool.getConnection(); PreparedStatement ps1 = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS); PreparedStatement ps2 = connection.prepareStatement(query2)) {
+        try (Connection connection = pool.getConnection(); 
+             PreparedStatement ps1 = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS); 
+             PreparedStatement ps2 = connection.prepareStatement(query2)) {
 
             // Start transaction
             connection.setAutoCommit(false);
@@ -92,13 +94,74 @@ public class FeynmanDB {
 
             // Insert each user role
             for (String role : user.getRoles()) {
-                if (role.equals("parent")) {
-                    ps2.setInt(2, 4);
+                if (role.equals("admin")) {
+                    ps2.setInt(2, 1);
+                } else if (role.equals("teacher")) {
+                    ps2.setInt(2, 2);
                 } else if (role.equals("student")) {
                     ps2.setInt(2, 3);
+                } else if (role.equals("parent")) {
+                    ps2.setInt(2, 4);
                 }
                 ps2.setInt(1, userID);
                 ps2.executeUpdate();
+            }
+
+            // Commit transaction
+            connection.commit();
+        }
+
+    }
+    
+    public static void updateUser(User user) throws SQLException {
+        ConnectionPool pool = ConnectionPool.getInstance();
+
+        String query
+                = "UPDATE user " 
+                + "SET FirstName = ?, LastName = ?, Password = ? "
+                + "WHERE UserID = ?;";
+        String query2
+                = "DELETE FROM userroles " 
+                + "WHERE UserID = ?;";
+        String query3
+                = "INSERT INTO userroles (UserID, RoleID) "
+                + "VALUES (?, ?)";
+                
+
+        try (Connection connection = pool.getConnection(); 
+             PreparedStatement ps1 = connection.prepareStatement(query);
+             PreparedStatement ps2 = connection.prepareStatement(query2);
+             PreparedStatement ps3 = connection.prepareStatement(query3)) {
+
+            // Start transaction
+            connection.setAutoCommit(false);
+            
+            ps1.setString(1, user.getFirstName());
+            ps1.setString(2, user.getLastName());
+            ps1.setString(3, user.getPassword());
+            ps1.setInt(4, user.getUserID());
+            int affectedRows = ps1.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Updating user failed, no rows affected.");
+            }
+            
+            ps2.setInt(1, user.getUserID());
+            ps2.executeUpdate();
+            
+            // Insert each user role
+            for (String role : user.getRoles()) {
+                if (role.equals("admin")) {
+                    ps3.setInt(2, 1);
+                } else if (role.equals("teacher")) {
+                    ps3.setInt(2, 2);
+                } else if (role.equals("student")) {
+                    ps3.setInt(2, 3);
+                } else if (role.equals("parent")) {
+                    ps3.setInt(2, 4);
+                }
+                ps3.setInt(1, user.getUserID());
+                ps3.executeUpdate();
             }
 
             // Commit transaction

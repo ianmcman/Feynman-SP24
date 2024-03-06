@@ -8,6 +8,18 @@
         <title>Admin Dashboard</title>
     </head>
     <body>
+        <nav>
+        <c:choose>
+            <c:when test = "${sessionScope.user == null}"> 
+                <a href="<c:url value='Public?action=login' />"> Login</a> |   
+                <a href="<c:url value='Public?action=register' />">Register</a> | 
+            </c:when>
+            <c:when test = "${sessionScope.user != null}"> 
+                <a href="<c:url value='Private?action=logout' />"> Logout</a> |  
+                <a href="<c:url value='Private?action=dashboard' />">Dashboard</a>
+            </c:when>
+        </c:choose>
+        </nav>
         <table>
             <tr>
                 <th>UserID</th>
@@ -29,7 +41,7 @@
                         <input type="hidden" name="userID" value="${localUser.userID}" />
                         <input type="submit" value="Edit"/>
                     </form>
-                    <form action="Admin" method="get">
+                    <form action="Admin" method="post">
                         <input type="hidden" name="action" value="delete" />
                         <input type="hidden" name="userID" value="${localUser.userID}" />
                         <input type="submit" value="Delete"/>
