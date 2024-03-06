@@ -216,7 +216,8 @@ INSERT INTO `user` (`UserID`, `Username`, `Password`, `FirstName`, `LastName`) V
 (1, 'jwalrath21', 'password', 'Jonathan', 'Walrath'),
 (2, 'admin', 'password', 'Admin', 'McAdmin'),
 (3, 'student', 'password', 'Student', 'Studentson'),
-(4, 'parent', 'password', 'Parent', 'Fitzparent');
+(4, 'parent', 'password', 'Parent', 'Fitzparent')
+(5, 'teacher', 'password', 'Teacher', 'MacTeacher');
 
 -- --------------------------------------------------------
 
@@ -292,7 +293,8 @@ INSERT INTO `userroles` (`UserID`, `RoleID`) VALUES
 (1, 4),
 (2, 1),
 (3, 3),
-(4, 4);
+(4, 4),
+(5, 2);
 
 --
 -- Indexes for dumped tables
