@@ -44,7 +44,9 @@
             </c:when>
             <c:otherwise >
                 <c:forEach items="${qp.getQuestions()}" var="q">
-                    <p><c:out value="${q.getQuestionText()}"/></p>
+                    <p><c:out value="${q.getQuestionText()}"/> 
+                    <a href="<c:url value='Teacher?action=editQPool&rPage=editQP&rIndex=${rIndex}&edit=removeQ&QID=${q.getID()}' />"> Remove</a>
+                    </p>
                 </c:forEach>
                     <a href="<c:url value='Teacher?action=addQuestion&rPage=editQP&rIndex=${rIndex}' />"> Add Question to Pool</a>
             </c:otherwise >

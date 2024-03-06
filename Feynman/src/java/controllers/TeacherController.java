@@ -182,6 +182,7 @@ public class TeacherController extends HttpServlet {
                     QuestionPool qp = FeynmanDB.getQuestionPool(ID, user.getUserID());
                     switch (edit) {
                         case "rename":
+                            //Rename Question Pool
                             String name = request.getParameter("qPName");
                             if (name.isBlank()) {
                                 errors.add("Question Pool must have a name");
@@ -193,13 +194,11 @@ public class TeacherController extends HttpServlet {
                                 }
                             }
                             break;
-                        case "addQ":
-                            //Add Question
-                            break;
                         case "removeQ":
                             //Remove Question
-                            break;
-                        default:
+                            int QID = Integer.parseInt(request.getParameter("QID"));
+                            FeynmanDB.removeQuestionFromPool(QID, qp.getID());
+                            qp = FeynmanDB.getQuestionPool(qp.getID());
                             break;
                     }
 
