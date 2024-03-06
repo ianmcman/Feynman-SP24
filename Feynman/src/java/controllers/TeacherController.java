@@ -90,7 +90,6 @@ public class TeacherController extends HttpServlet {
                 int pChoice = -1;
                 String aTypeString = request.getParameter("aType");
                 Assessment a = null;
-                QuestionPool qp = null;
                 Assessment.assessmentType aType = null;
 
                 if (aName == null || aName.isBlank()) {
@@ -123,8 +122,8 @@ public class TeacherController extends HttpServlet {
                     errors.add("Pool choice must have a numeric ID.");
                 }
                 
-                qp = FeynmanDB.getQuestionPool(pChoice, user.getUserID());
-                if (qp == null) {
+                
+                if (FeynmanDB.getQuestionPool(pChoice, user.getUserID()) == null) {
                     errors.add("Invalid question pool ID.");
                 }
                 

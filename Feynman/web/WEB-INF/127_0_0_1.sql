@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 20, 2024 at 11:26 AM
+-- Generation Time: Mar 06, 2024 at 01:24 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `feynman`
 --
-CREATE DATABASE IF NOT EXISTS `feynman` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `feynman`;
 
 -- --------------------------------------------------------
 
@@ -32,8 +30,8 @@ USE `feynman`;
 CREATE TABLE `assessment` (
   `AssID` int(11) NOT NULL,
   `AssPool` int(11) NOT NULL,
-  `AssRandom` tinyint(1) NOT NULL,
-  `AssLength` int(11) NOT NULL,
+  `AssRandom` tinyint(1) DEFAULT NULL,
+  `AssLength` int(11) DEFAULT NULL,
   `AssRetakes` int(11) NOT NULL,
   `AssType` text NOT NULL,
   `AssName` varchar(255) NOT NULL
@@ -225,7 +223,8 @@ CREATE TABLE `userroles` (
 -- Indexes for table `assessment`
 --
 ALTER TABLE `assessment`
-  ADD PRIMARY KEY (`AssID`);
+  ADD PRIMARY KEY (`AssID`),
+  ADD KEY `AssPool` (`AssPool`);
 
 --
 -- Indexes for table `assessmentattemptquestions`
@@ -336,7 +335,7 @@ ALTER TABLE `userroles`
 -- AUTO_INCREMENT for table `assessment`
 --
 ALTER TABLE `assessment`
-  MODIFY `AssID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `AssID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `assessmentattemptquestions`
@@ -360,29 +359,35 @@ ALTER TABLE `classroom`
 -- AUTO_INCREMENT for table `pool`
 --
 ALTER TABLE `pool`
-  MODIFY `PoolID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `PoolID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `question`
 --
 ALTER TABLE `question`
-  MODIFY `QID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `QID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `RoleID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `RoleID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `assessment`
+--
+ALTER TABLE `assessment`
+  ADD CONSTRAINT `assessment_ibfk_1` FOREIGN KEY (`AssPool`) REFERENCES `pool` (`PoolID`);
 
 --
 -- Constraints for table `assessmentattemptquestions`
