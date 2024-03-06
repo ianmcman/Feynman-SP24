@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 06, 2024 at 01:24 AM
+-- Generation Time: Mar 06, 2024 at 06:06 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `feynman`
 --
+CREATE DATABASE IF NOT EXISTS `feynman` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `feynman`;
 
 -- --------------------------------------------------------
 
@@ -36,6 +38,14 @@ CREATE TABLE `assessment` (
   `AssType` text NOT NULL,
   `AssName` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `assessment`
+--
+
+INSERT INTO `assessment` (`AssID`, `AssPool`, `AssRandom`, `AssLength`, `AssRetakes`, `AssType`, `AssName`) VALUES
+(2, 2, NULL, NULL, 10000, 'DRILL', 'Simple Addition Drill'),
+(3, 3, NULL, NULL, 0, 'EXAM', 'Simple Subtraction Exam');
 
 -- --------------------------------------------------------
 
@@ -96,6 +106,14 @@ CREATE TABLE `pool` (
   `PoolName` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `pool`
+--
+
+INSERT INTO `pool` (`PoolID`, `PoolName`) VALUES
+(2, 'Simple Addition'),
+(3, 'Simple Subtraction');
+
 -- --------------------------------------------------------
 
 --
@@ -112,6 +130,16 @@ CREATE TABLE `question` (
   `QInclAdd` tinyint(1) NOT NULL,
   `QInclSub` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `question`
+--
+
+INSERT INTO `question` (`QID`, `QFormula`, `QAnswer`, `QDifficulty`, `QInclMult`, `QInclDiv`, `QInclAdd`, `QInclSub`) VALUES
+(3, '5 + 5', '10', 1, 0, 0, 1, 0),
+(4, '2 + 2', '4', 1, 0, 0, 1, 0),
+(5, '3 - 1', '2', 2, 0, 0, 0, 1),
+(6, '250 - 130', '120', 3, 0, 0, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -134,6 +162,16 @@ CREATE TABLE `questionpools` (
   `QID` int(11) NOT NULL,
   `PoolID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `questionpools`
+--
+
+INSERT INTO `questionpools` (`QID`, `PoolID`) VALUES
+(3, 2),
+(4, 2),
+(5, 3),
+(6, 3);
 
 -- --------------------------------------------------------
 
@@ -223,6 +261,14 @@ CREATE TABLE `userpools` (
   `UserID` int(11) NOT NULL,
   `PoolID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `userpools`
+--
+
+INSERT INTO `userpools` (`UserID`, `PoolID`) VALUES
+(1, 2),
+(1, 3);
 
 -- --------------------------------------------------------
 
@@ -368,7 +414,7 @@ ALTER TABLE `userroles`
 -- AUTO_INCREMENT for table `assessment`
 --
 ALTER TABLE `assessment`
-  MODIFY `AssID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `AssID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `assessmentattemptquestions`
@@ -392,25 +438,25 @@ ALTER TABLE `classroom`
 -- AUTO_INCREMENT for table `pool`
 --
 ALTER TABLE `pool`
-  MODIFY `PoolID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `PoolID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `question`
 --
 ALTER TABLE `question`
-  MODIFY `QID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `QID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `RoleID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `RoleID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables

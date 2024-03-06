@@ -96,11 +96,13 @@ public class TeacherController extends HttpServlet {
                     errors.add("Assessment name can't be blank or null.");
                 }
 
-                if (infRetakes.equalsIgnoreCase("on")) {
-                    retakes = 10000;
+                if (infRetakes != null) {
+                    if (infRetakes.equalsIgnoreCase("on")) {
+                        retakes = 10000;
+                    }
                 }
 
-                if (infRetakes.equalsIgnoreCase("null")) {
+                if (infRetakes == null) {
                     if (retakesString == null || retakesString.isBlank()) {
                         errors.add("Retakes must not be null.");
                     } else {
@@ -121,19 +123,18 @@ public class TeacherController extends HttpServlet {
                 } catch (NumberFormatException e) {
                     errors.add("Pool choice must have a numeric ID.");
                 }
-                
-                
+
                 if (FeynmanDB.getQuestionPool(pChoice, user.getUserID()) == null) {
                     errors.add("Invalid question pool ID.");
                 }
-                
+
                 try {
                     aType = Assessment.assessmentType.valueOf(aTypeString);
                 } catch (IllegalArgumentException e) {
                     errors.add("Assessment type can't be custom.");
                     aTypeString = "";
-                } 
-                
+                }
+
                 if (errors.isEmpty()) {
                     // add assessment to DB
                     a = new Assessment();
@@ -147,12 +148,13 @@ public class TeacherController extends HttpServlet {
                     } else {
                         a.setAssessmentID(id);
                     }
+                    message += "Assessment Creation Success!";
                 }
-                
+
                 if (!(errors.isEmpty())) {
                     request.setAttribute("name", aName);
                     request.setAttribute("retakes", retakesString);
-                    
+
                 }
 
                 break;
