@@ -35,11 +35,10 @@ public class StudentController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
-//        if (loggedInUser == null) {
-//            response.sendRedirect("Public");
-//            return;
-//        }
+        if (!isStudent(request, response)) {
+            response.sendRedirect("Public");
+            return;
+        }
         
         String url = "/Student/index.jsp";
         String action = request.getParameter("action");
@@ -104,5 +103,13 @@ public class StudentController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }
-
+    
+    private boolean isStudent(HttpServletRequest request, HttpServletResponse response) {
+        User loggedInUser = (User) request.getSession().getAttribute("user");
+        if (loggedInUser == null || !loggedInUser.getRoles().contains("student")) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
