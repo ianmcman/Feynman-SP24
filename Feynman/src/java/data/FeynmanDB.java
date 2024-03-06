@@ -717,6 +717,7 @@ public class FeynmanDB {
         PreparedStatement ps = null;
         ResultSet rs = null;
         Attempt attempt = null;
+        Attempt prevAttempt = null;
         Question question = null;
 
         String query = "SELECT `assessmentattempts`.*, `assessmentattemptquestions`.*, `question`.*" +
@@ -746,7 +747,7 @@ public class FeynmanDB {
                 question.setAnswer(rs.getString("QAnswer"));
                 //question.setqType();
                 question.setDifficulty(rs.getInt("QDifficulty"));
-                if (rs.getBoolean("correctAnswer")) {
+                if (rs.getInt("correctAnswer") == 1) {
                     correctQuestions.add(question);
                 } else {
                     incorrectQuestions.add(question);
@@ -754,6 +755,8 @@ public class FeynmanDB {
                 attempt.setCorrectQuestions(correctQuestions);
                 attempt.setIncorrectQuestions(incorrectQuestions);
                 studentAttempts.add(attempt);
+                
+                
             }
             return studentAttempts;
 

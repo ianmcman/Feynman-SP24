@@ -8,7 +8,7 @@
     </head>
     <body>
         <c:import url="/nav.jsp" />
-        <h1>Temp test page</h1>
+        <h1>Hub</h1>
         <a href="Student?action=studentAttempts"> Student Attempts</a>
     </body>
 </html>
